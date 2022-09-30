@@ -51,6 +51,11 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "optional_labs/objects_prep",
+              "path": "/optional_labs/objects_prep",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "optional_labs/ocp_idp",
               "path": "/optional_labs/ocp_idp",
               "sidebar": "tutorialSidebar"

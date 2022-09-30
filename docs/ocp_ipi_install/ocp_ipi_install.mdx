@@ -34,6 +34,8 @@ We have referred to the following documents for building this lab:
 
 The following pre-requisites are necessary:
 
+- Prism Central - at least **pc.2022.4.0.2**
+- AOS - at least **5.20.4**
 - Access to RedHat Console to download the following    
   - Pull secret
   - IPI installation binaries
@@ -347,25 +349,27 @@ All this will be done on the UserXX-LinuxToolsVM.
    Email Address []:first.last@nutanix.com
    ```
    
-2. Create an answer file for Prism Central's certificate parameters. Feel free to change your country, state and locality names.
+2. Create a configuration file for Prism Central's certificate parameters. Feel free to change your country, state and locality names.
 
    ```bash
    cat << EOF > pc.conf
    [ req ]
-   default_bits       = 2048
+   default_bits    = 2048
    distinguished_name = req_distinguished_name
-   req_extensions     = req_ext
+   req_extensions   = req_ext
    [ req_distinguished_name ]
-   countryName = JP
-   stateOrProvinceName = Chiba
-   localityName = Kashiwa
-   organizationName = pc
-   commonName = ntnxlab.local
+   countryName     = Country Name (2 letter code)
+   stateOrProvinceName = State or Province Name
+   localityName    = Locality Name
+   organizationName  = Organization Name
+   organizationName_default = pc
+   commonName     = Common Name
+   commonName_default     = ntnxlab.local
    [ req_ext ]
    subjectAltName = @alt_names
    [alt_names]
-   DNS.1   = pc.ntnxlab.local
-   DNS.2   = prism.ntnxlab.local
+   DNS.1  = pc.ntnxlab.local
+   DNS.2  = prism.ntnxlab.local
    EOF
    ```
 3. Create the private key and CSR for Prism Central
@@ -376,7 +380,6 @@ All this will be done on the UserXX-LinuxToolsVM.
    ```
    ```bash title="Execution example - make sure to retype the input values as shown here"
    openssl req -new -sha256  -key pc.key -config ./pc.conf -out pc.csr
-   ##
    You are about to be asked to enter information that will be incorporated
    into your certificate request.
    What you are about to enter is what is called a Distinguished Name or a DN.
@@ -384,11 +387,11 @@ All this will be done on the UserXX-LinuxToolsVM.
    For some fields there will be a default value,
    If you enter '.', the field will be left blank.
    -----
-   JP []:JP
-   Chiba []:Chiba
-   Kashiwa []:Kashiwa
-   pc []:pc
-   ntnxlab.local []:ntnxlab.local
+   Country Name (2 letter code) []:JP
+   State or Province Name []:Chiba
+   Locality Name []:Kashiwa
+   Organization Name [pc]:pc
+   Common Name [ntnxlab.local]:ntnxlab.local
    ```
 
 4. Get your Prism Central's  DNS details from the CSR you created
@@ -437,7 +440,7 @@ All this will be done on the UserXX-LinuxToolsVM.
 
    ![](images/certs-on-wintools.png)
 
-8. Logon to Prism Central Web GUI on the WindowsToolsPC
+8. Logon to Prism Central Web GUI on the WindowsToolsVM
 
    ```url
    https://pc.ntnxlab.local/
@@ -595,14 +598,15 @@ In this section we will create our installation configuration files which will b
 5. Add the details:
 
    ```bash
-   vi install-config.yaml
+   vim install-config.yaml
+   # if vim is not present, install using #yum install -y vim
    ```
 
    <details>
    <summary>Toggle me for a file editing tip</summary>
    <div>
    <body>
-   Using vim you can edit the ssl certificate block
+   Using vim you can edit multiple lines in the ssl certificate block
    <ol type="1">
          <li>Move the cursor the to beigging on the line "-----BEGIN CERTIFICATE-----"</li>
          <li>Use ``crtl`` + ``v`` keyboard combination to enter visual block mode </li>
@@ -617,15 +621,15 @@ In this section we will create our installation configuration files which will b
    </details>
    
 
-   ```yml {4-13,19,35} title="Sample install-config.yaml file - Edit the highlighted lines"
+   ```yml {4-13,19,35} title="Sample install-config.yaml file - Edit the highlighted parts"
    apiVersion: v1
    baseDomain: ntnxlab.local
    additionalTrustBundle: | 
-     -----BEGIN CERTIFICATE-----
+     -----BEGIN CERTIFICATE-----                                        ## << contents of rootCA.crt 
      MIIEBTCCAu2gAwIBAgIJAPDfr9SQbStmMA0GCSqGSIb3DQEBCwUAMIGYMQswCQYD
      VQQGEwJKUDEOMAwGA1UECAwFQ2hpYmExEDAOBgNVBAcMB0thc2hpd2ExEDAOBgNV
      BAoMB251dGFuaXgxDzANBgNVBAsMBnJvb3RjYTEdMBsGA1UEAwwUcm9vdGNhLm50
-     <snipped for brevity>
+     <snipped for brevity> 
      WtAYCgGyXEUNVltpXBg8M/0S3WLgkW+Z0r408vC4kIIHAWANfJiGt3qLYeVep91h
      NDB2Cn14G9CSCN3Pb1jO2wz9sc1E3rEPo1VHjyOjWccDayTJ3i/lNz6taPbXcmV7
      3ZIeb1v6oRYfB4O/XQMvonTHwTXgumBWOxGcoh5g4h9av+v4oPykJqJexNSbwtQy
@@ -636,7 +640,7 @@ In this section we will create our installation configuration files which will b
      hyperthreading: Enabled
      name: worker
      platform: {}
-     replicas: 3 ## << This can be made into 2 nodes
+     replicas: 3 ## << This can be just 2 nodes
    controlPlane:
      architecture: amd64
      hyperthreading: Enabled
@@ -652,7 +656,7 @@ In this section we will create our installation configuration files which will b
      - cidr: 10.128.0.0/14
        hostPrefix: 23
      machineNetwork:
-     - cidr: 10.38.18.192/26
+     - cidr: 10.38.18.192/26   ## << This should be your HPOC cluster's subnet
      networkType: OpenShiftSDN
      serviceNetwork:
      - 172.30.0.0/16
@@ -759,11 +763,11 @@ This will be simplest part of all, provided you have done everything correctly t
    oc get nodes
    ##
    NAME                     STATUS   ROLES    AGE     VERSION
-   xyz-6zlwh-master-0       Ready    master   3d14h   v1.24.0+b62823b
-   xyz-6zlwh-master-1       Ready    master   3d14h   v1.24.0+b62823b
-   xyz-6zlwh-master-2       Ready    master   3d14h   v1.24.0+b62823b
-   xyz-6zlwh-worker-czbn7   Ready    worker   3d14h   v1.24.0+b62823b
-   xyz-6zlwh-worker-njv66   Ready    worker   3d14h   v1.24.0+b62823b
+   xyz-6zlwh-master-0       Ready    master   14m   v1.24.0+b62823b
+   xyz-6zlwh-master-1       Ready    master   14m   v1.24.0+b62823b
+   xyz-6zlwh-master-2       Ready    master   14m   v1.24.0+b62823b
+   xyz-6zlwh-worker-czbn7   Ready    worker   14m   v1.24.0+b62823b
+   xyz-6zlwh-worker-njv66   Ready    worker   14m   v1.24.0+b62823b
    ```
    Through the OCP GUI using kubeadmin credentials
 

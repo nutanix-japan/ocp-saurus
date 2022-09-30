@@ -1,7 +1,7 @@
 {
   "unversionedId": "ocp_ntnx_hci/ocp_vms",
   "id": "ocp_ntnx_hci/ocp_vms",
-  "title": "OCP: Deploy OCP Infrastructure",
+  "title": "Deploy OCP Infrastructure",
   "description": "In this section we will deploy a OCP cluster using Nutanix Calm.",
   "source": "@site/docs/ocp_ntnx_hci/ocp_vms.mdx",
   "sourceDirName": "ocp_ntnx_hci",
@@ -14,15 +14,15 @@
   "sidebarPosition": 4,
   "frontMatter": {
     "sidebar_position": 4,
-    "title": "OCP: Deploy OCP Infrastructure"
+    "title": "Deploy OCP Infrastructure"
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "OCP: Deploy Provisioning VM",
+    "title": "Deploy Provisioning VM",
     "permalink": "/ocp_ntnx_hci/prov_vm"
   },
   "next": {
-    "title": "OCP: Day 0 and Day 1 Operations",
+    "title": "Day 0 and Day 1 Operations",
     "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
   }
 }

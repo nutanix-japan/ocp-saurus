@@ -17,41 +17,41 @@
       },
       {
         "type": "category",
-        "label": "OCP on Nutanix HCI",
+        "label": "OCP with Nutanix Cloud Manager (NCM)",
         "items": [
           {
             "type": "link",
-            "label": "OCP: Architecture and Initial Setup",
+            "label": "Architecture and Initial Setup",
             "href": "/ocp_ntnx_hci/import_bp",
             "docId": "ocp_ntnx_hci/import_bp"
           },
           {
             "type": "link",
-            "label": "OCP: Deploy Provisioning VM",
+            "label": "Deploy Provisioning VM",
             "href": "/ocp_ntnx_hci/prov_vm",
             "docId": "ocp_ntnx_hci/prov_vm"
           },
           {
             "type": "link",
-            "label": "OCP: Deploy OCP Infrastructure",
+            "label": "Deploy OCP Infrastructure",
             "href": "/ocp_ntnx_hci/ocp_vms",
             "docId": "ocp_ntnx_hci/ocp_vms"
           },
           {
             "type": "link",
-            "label": "OCP: Day 0 and Day 1 Operations",
+            "label": "Day 0 and Day 1 Operations",
             "href": "/ocp_ntnx_hci/ocp_scale_out_in",
             "docId": "ocp_ntnx_hci/ocp_scale_out_in"
           },
           {
             "type": "link",
-            "label": "OCP: Deploy Nutanix CSI for OCP",
+            "label": "Deploy Nutanix CSI for OCP",
             "href": "/ocp_ntnx_hci/ocp_csi",
             "docId": "ocp_ntnx_hci/ocp_csi"
           },
           {
             "type": "link",
-            "label": "OCP: Provision Storage for Image Registry",
+            "label": "Provision Storage for Image Registry",
             "href": "/optional_labs/ocp_image_registry",
             "docId": "optional_labs/ocp_image_registry"
           }
@@ -61,25 +61,13 @@
       },
       {
         "type": "category",
-        "label": "Workloads on OCP",
+        "label": "OCP with IPI Installer",
         "items": [
           {
             "type": "link",
-            "label": "Deploying Backup Application",
-            "href": "/workloads_on_ocp/ocp_k10",
-            "docId": "workloads_on_ocp/ocp_k10"
-          },
-          {
-            "type": "link",
-            "label": "Deploying Workload",
-            "href": "/workloads_on_ocp/ocp_wordpress_deploy",
-            "docId": "workloads_on_ocp/ocp_wordpress_deploy"
-          },
-          {
-            "type": "link",
-            "label": "Backup and Restore Applications",
-            "href": "/workloads_on_ocp/ocp_k10_backup_restore",
-            "docId": "workloads_on_ocp/ocp_k10_backup_restore"
+            "label": "OCP: IPI Installation",
+            "href": "/ocp_ipi_install/",
+            "docId": "ocp_ipi_install/ocp_ipi_install"
           }
         ],
         "collapsed": true,
@@ -101,13 +89,31 @@
       },
       {
         "type": "category",
-        "label": "OCP with IPI Installer",
+        "label": "Workloads on OCP",
         "items": [
           {
             "type": "link",
-            "label": "OCP: IPI Installation",
-            "href": "/ocp_ipi_install/",
-            "docId": "ocp_ipi_install/ocp_ipi_install"
+            "label": "Nutanix Objects as Backup Destination",
+            "href": "/optional_labs/objects_prep",
+            "docId": "optional_labs/objects_prep"
+          },
+          {
+            "type": "link",
+            "label": "Deploying Backup Application",
+            "href": "/workloads_on_ocp/ocp_k10",
+            "docId": "workloads_on_ocp/ocp_k10"
+          },
+          {
+            "type": "link",
+            "label": "Deploying Workload",
+            "href": "/workloads_on_ocp/ocp_wordpress_deploy",
+            "docId": "workloads_on_ocp/ocp_wordpress_deploy"
+          },
+          {
+            "type": "link",
+            "label": "Backup and Restore Applications",
+            "href": "/workloads_on_ocp/ocp_k10_backup_restore",
+            "docId": "workloads_on_ocp/ocp_k10_backup_restore"
           }
         ],
         "collapsed": true,
@@ -176,32 +182,38 @@
     },
     "ocp_ntnx_hci/import_bp": {
       "id": "ocp_ntnx_hci/import_bp",
-      "title": "OCP: Architecture and Initial Setup",
+      "title": "Architecture and Initial Setup",
       "description": "In this lab, we will set up OCP infrastructure using Nutanix Calm.",
       "sidebar": "tutorialSidebar"
     },
     "ocp_ntnx_hci/ocp_csi": {
       "id": "ocp_ntnx_hci/ocp_csi",
-      "title": "OCP: Deploy Nutanix CSI for OCP",
+      "title": "Deploy Nutanix CSI for OCP",
       "description": "In this section we will enable your deployed OCP cluster to have access to Nutanix HCI storage in the form of StorageClass, Physical Volumes and Pysical Volume claims.",
       "sidebar": "tutorialSidebar"
     },
     "ocp_ntnx_hci/ocp_scale_out_in": {
       "id": "ocp_ntnx_hci/ocp_scale_out_in",
-      "title": "OCP: Day 0 and Day 1 Operations",
+      "title": "Day 0 and Day 1 Operations",
       "description": "In this section we will look at Typical Day 1 operations of your OCP cluster in terms of scaling out and scaling in VMs.",
       "sidebar": "tutorialSidebar"
     },
     "ocp_ntnx_hci/ocp_vms": {
       "id": "ocp_ntnx_hci/ocp_vms",
-      "title": "OCP: Deploy OCP Infrastructure",
+      "title": "Deploy OCP Infrastructure",
       "description": "In this section we will deploy a OCP cluster using Nutanix Calm.",
       "sidebar": "tutorialSidebar"
     },
     "ocp_ntnx_hci/prov_vm": {
       "id": "ocp_ntnx_hci/prov_vm",
-      "title": "OCP: Deploy Provisioning VM",
+      "title": "Deploy Provisioning VM",
       "description": "Configure Provisioning VM Blueprint",
+      "sidebar": "tutorialSidebar"
+    },
+    "optional_labs/objects_prep": {
+      "id": "optional_labs/objects_prep",
+      "title": "Nutanix Objects as Backup Destination",
+      "description": "In this section we will setup up Nutanix Objects to serve as a backup destination to backup our wordpress application.",
       "sidebar": "tutorialSidebar"
     },
     "optional_labs/ocp_idp": {
@@ -212,8 +224,8 @@
     },
     "optional_labs/ocp_image_registry": {
       "id": "optional_labs/ocp_image_registry",
-      "title": "OCP: Provision Storage for Image Registry",
-      "description": "OCP comes with a in-built container image registry. The advantages of",
+      "title": "Provision Storage for Image Registry",
+      "description": "OCP comes with a in-built container image registry. The advantages of these container image registry are the following:",
       "sidebar": "tutorialSidebar"
     },
     "optional_labs/ocp_vms_2": {

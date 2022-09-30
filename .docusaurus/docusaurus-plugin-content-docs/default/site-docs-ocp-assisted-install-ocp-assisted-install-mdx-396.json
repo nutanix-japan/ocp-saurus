@@ -17,11 +17,11 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Backup and Restore Applications",
-    "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
-  },
-  "next": {
     "title": "OCP: IPI Installation",
     "permalink": "/ocp_ipi_install/"
+  },
+  "next": {
+    "title": "Nutanix Objects as Backup Destination",
+    "permalink": "/optional_labs/objects_prep"
   }
 }

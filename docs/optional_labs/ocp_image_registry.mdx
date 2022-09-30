@@ -1,29 +1,245 @@
 ---
-title: "OCP: Provision Storage for Image Registry"
+title: "Provision Storage for Image Registry"
 ---
 
-OCP comes with a in-built container image registry. The advantages of
-these container image registry are the following:
+OCP comes with a in-built container image registry. The advantages of these container image registry are the following:
 
 -   Integrates with OCP clusters authentication and authorization system
--   Provides a image source local to the cluster for all running
-    workloads
--   Integrates with OCP clusters CICD workflows - for example when a new
-    cotainer images is uploaded to this registry, the cluster can update
+-   Provides a image source local to the cluster for all running workloads
+-   Integrates with OCP clusters CICD workflows - for example when a new container images is uploaded to this registry, the cluster can update
     the image of all the running running contianers
 -   Registry can be easily scaled up or down
 -   Image data is stored in a cloud storage
 
-In this lab we will create a persistent volume claim (PVC) and present
-it as storage to the running image registry on this OCP cluster. This
+There are two ways of provisioning Nutanix HCI based storage to OpenShift Image Registry:
+
+- Using S3 compliant storage (recommended by Nutanix and RedHat)
+- Presenting a CSI Volumes PVC (RWO) 
+
+We will look at both in this section. Nutanix CSI Volumes PVC is optional. Use one or the other for OCP Image registry. 
+
+## Image Registry Storage using Nutanix Bucket (S3)
+
+In this section we will provision Nutanix Objects based S3 storage to serve as a storage for all OpenShift image registry containers. 
+
+### Generating Access Keys for S3 Bucket
+
+1.  Go to **Prism Central** > **Objects**
+
+2.  Note down the **ntnx-objects** object store's public IP
+
+    ![](ocp_image_registry_images/object_public_ip.png)
+
+3.  On the top menu, click on **Access Keys**
+
+4.  Click on **+ Add people**
+
+5.  Select **Add people not in a directory service**
+
+6.  Enter your email and name
+
+    ![](ocp_image_registry_images/objects_access_key.png)
+
+7.  Click on **Next**
+
+8.  Click on **Generate Keys**
+
+9.  Once generated, click on **Download Keys**
+
+10. Once downloaded, click on **Close**
+
+11. Open the downloaded file to verify contents
+
+    ![](ocp_image_registry_images/xyz_access_key.png)
+
+12. Store the access key and secret key in a safe place for later access
+
+### Create Buckets Storage for OCP Image Registry
+
+We will create a bucket for backup destination
+
+1.  On the top menu, click on **Object Stores**
+
+2.  Click on **ntnx-objects**, this will open objects store management page in a separate browser tab
+
+3.  Click on **Create Bucket**
+
+4.  Enter *Initials*-ocp-registry as the bucket name
+
+5.  Click on **Create**
+
+6.  In the list of buckets, click on the *Initials*-ocp-registry bucket
+
+7.  Click on **User Access** menu and **Edit User Access**
+
+    ![](ocp_image_registry_images/bucket_ua.png)
+
+8.  In the **Share Bucket xyz-k10** window, type in your email that you configured in User Access section
+
+9.  Give **Read** and **Write** permissions
+
+    ![](ocp_image_registry_images/share_k10_bucket.png)
+
+10. Click on **Save**
+
+### Create a DNS Entry for Nutanix Objects Store
+
+In this section we will add nutanix objects store's DNS records for lookup by OCP Image registry. 
+
+1. Logon to the AutoAD windows VM 
+
+   - Username: administrator
+   - Password: default
+
+2. We will add the following entries to DNS server using the two consecutive IPs you found in the previous section
+   
+   :::danger Use your HPOC cluster's IP Addresses
+
+   The IP addresses in the following commands are used as an example. You should use IP address details that belong to your HPOC cluster. For information on locating your cluster IP see Getting Started [Networking](../intro.md#networking) section. 
+   
+   :::
+   
+   ```buttonless
+   10.38.18.221  ntnx-objects.ntnxlab.local
+   ```
+
+3. Open PowerShell as Administrator and create the two A records
+
+   ```PowerShell title="Add the API A record - use your own subdomain"
+   Add-DnsServerResourceRecordA -Name ntnx-objects.ntnxlab.local -IPv4Address 10.38.18.221 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local
+   ```
+
+3. Test name resolution for added entries
+
+   ```PowerShell {6} 
+   nslookup ntnx-objects.ntnxlab.local
+   Server: dc.ntnxlab.local
+   Address: 10.38.18.203
+
+   Name: ntnx-objects.ntnxlab.local
+   Address: 10.38.18.221 
+   ```
+
+### Download Object Store's Public Certificate
+
+1. Logon to Prism Central Web GUI on the WindowsToolsVM
+
+   ```url
+   https://pc.ntnxlab.local/
+   ```
+
+2. Browse to **Services > Objects** (this will open in a new browser tab)
+
+3. Select the **ntnx-objects**  objects store 
+
+4. Click on Actions and select **Manage FQDNs and SSL Certificates**
+
+   ![](ocp_image_registry_images/objects_ssl_cert.png)
+
+5. Click on **Download CA Certificate**
+
+6. Copy the contents of the downloaded pem (public certificate) file
+
+7. Go to your UserXX-LinuxToolsVM 
+
+8. Go to you working directory 
+
+   ```bash
+   cd /root/xyz/
+   ```
+
+9. Create a new file and paste the contents of the above pem file 
+    
+   ```bash
+   vi ntnx-objects.pem
+   ```
+   Save and close the file.
+
+10. Create a connection to your OCP cluster (if not already done so)
+
+   ```bash
+   export KUBECONFIG=/root/xyz/auth/kubeconfig
+   ```
+   List the nodes in the cluster to make sure the connection is working
+
+   ```bash
+   oc get nodes
+   ```
+   ```buttonless title="Output"
+   # oc get nodes
+   NAME                     STATUS   ROLES    AGE    VERSION
+   xyz-7q676-master-0       Ready    master   115m   v1.24.0+b62823b
+   xyz-7q676-master-1       Ready    master   116m   v1.24.0+b62823b
+   xyz-7q676-master-2       Ready    master   115m   v1.24.0+b62823b
+   xyz-7q676-worker-4lxjt   Ready    worker   104m   v1.24.0+b62823b
+   xyz-7q676-worker-fg7b5   Ready    worker   104m   v1.24.0+b62823b
+   xyz-7q676-worker-kbsfw   Ready    worker   104m   v1.24.0+b62823b
+   ```
+
+11. Create a config map 
+
+  ```bash
+  oc create configmap object-ca --from-file=ca-bundle.crt=ntnx-objects.pem -n openshift-config 
+  ```
+  ```buttonless title="Output"
+  configmap/object-ca created
+  ```
+
+12. Make the nutanix objects ssl certificate available to OCP's global proxy settings
+  
+  ```bash
+  oc patch proxy/cluster --type=merge --patch='{"spec":{"trustedCA":{"name":"object-ca"}}}'
+  ```
+  ```buttonless title="Output"
+  proxy.config.openshift.io/cluster patched
+  ```
+
+13. Create a secret with the bucket access and secret key you generated in the previous section 
+  
+  ```bash
+  oc create secret generic image-registry-private-configuration-user \
+    --from-literal=REGISTRY_STORAGE_S3_ACCESSKEY=ofYqh4g2ImLNuXm5JjqDrRtiDLKU8YAr \
+    --from-literal=REGISTRY_STORAGE_S3_SECRETKEY=jluOBDuENC7jeci7JiSH4tsB4uCHX0ST \
+    --namespace openshift-image-registry
+  ```
+  ```buttonless title="Output"
+  secret/image-registry-private-configuration-user created
+  ```
+14. Update the image registry configuration to use the newly create nutanix objects S3 bucket 
+
+  ```bash
+  oc patch configs.imageregistry.operator.openshift.io/cluster \
+    --type='json' \
+    --patch='[
+  {"op": "remove", "path": "/spec/storage" },
+  {"op": "add", "path": "/spec/storage", "value":
+  {"s3":
+  {"bucket": "image-registry-bucket", 
+  "regionEndpoint": "https://ntnx-objects.ntnxlab.local",
+  "encrypt": false, 
+  "region": "us-east-1"}}}]'
+  ```
+  ```buttonless title="Output"
+  config.imageregistry.operator.openshift.io/cluster patched
+  ```
+
+15. Enable the image registry (by default image registry is disabled)
+   
+ ```bash
+ oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'
+ ```
+ ```buttonless title="Output"
+ config.imageregistry.operator.openshift.io/cluster patched
+ ```
+
+## Image Registry Storage using Volumes PVC
+
+In this lab we will create a persistent volume claim (PVC) and present it as storage to the running image registry on this OCP cluster. This
 will be our first use case for Nutanix provided HCI storage.
 
 The PVC will be 100 GB.
 
-# Creating the PVC
-
-1.  In Calm go to your **Applications** \> **Openshift ocp1**
-    application
+1.  In Calm go to your **Applications** > **Openshift ocp1**
 
 2.  Go to the **Services**
 
@@ -35,17 +251,15 @@ The PVC will be 100 GB.
 
     The terminal will open in a new browser tab
 
-5.  Export the OCP cluster\'s KUBECONFIG file to environment so we can
-    perform `oc` commands (if you haven\'t already)
+5.  Export the OCP cluster's KUBECONFIG file to environment so we can perform `oc` commands (if you haven't already)
 
     ``` bash
     export KUBECONFIG=~/openshift/auth/kubeconfig
     ```
 
-6.  Copy the following StorageClass configuration script and paste it in
-    the command line window
+6.  Copy the following StorageClass configuration script and paste it in the command line window
 
-    ``` bash
+    ```bash
     cat << EOF | oc apply -f -
     kind: PersistentVolumeClaim
     apiVersion: v1
@@ -62,28 +276,26 @@ The PVC will be 100 GB.
     EOF
     ```
 
-    ``` bash
+    ```bash
     # example output here for the above command
     # persistentvolumeclaim/image-registry-claim created
     ```
 
 7.  Confirm the creation of pvc using the following command
 
-    ``` bash
+    ```bash
     oc get pvc -n openshift-image-registry
     ```
 
-    ``` bash
+    ```bash
     # example output here for the above command
     # NAME                   STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE
     # image-registry-claim   Bound    pvc-e31a2dc7-fcb0-498b-bb88-ffdf61aeaa81   100Gi      RWO            nutanix-volume   2m14s
     ```
 
-Presenting the PVC to OCP Image Registry
-+++++++++++++++++++++++++++++++++++++
+### Presenting the PVC to OCP Image Registry
 
-1.  Copy the following patch configuration script and paste it in the
-    command line window
+1.  Copy the following patch configuration script and paste it in the command line window
 
     ``` bash
     oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed","storage":{"pvc":{"claim":"image-registry-claim"}},"rolloutStrategy": "Recreate"}}'
@@ -94,11 +306,9 @@ Presenting the PVC to OCP Image Registry
     # config.imageregistry.operator.openshift.io/cluster patched
     ```
 
-    This will patch the image registry with the created storage (PVC) by
-    re-creating imageregistry operator.
+    This will patch the image registry with the created storage (PVC) by re-creating imageregistry operator.
 
-2.  To see the changes at the operator level execute the following
-    command:
+2.  To see the changes at the operator level execute the following command:
 
     ``` bash
     oc describe configs.imageregistry.operator.openshift.io
@@ -123,26 +333,13 @@ Presenting the PVC to OCP Image Registry
        Unsupported Config Overrides:  <nil>
     ```
 
-::: note
-::: title
-Note
-:::
+To check the existence this PV in Prism Element, check the volume detail in Storage container.
 
-```{=html}
-<body><font color="green">Validation Task 9 - Take a screenshot of the of your image-registry-claim from the above command</font></body>
-```
-:::
-
-To check the existence this PV in Prism Element, check the volume detail
-in Storage container.
-
-1.  Go to your **Prism Element** \> **Storage** \> **Volume Group**
+1.  Go to your **Prism Element** > **Storage** > **Volume Group**
 
 2.  You should see a 100 GB disk provisioned as shown below
 
     ![](ocp_image_registry_images/ocp_pv_vg.png)
 
-You have successfully created a storage PVC in Nutanix HCI and presented
-it to a resource in OCP cluster. We will create other resources and
-present Nutanix HCI storage to them in the subsequent sections of the
-lab.
+You have successfully created a storage PVC in Nutanix HCI and presented it to a resource in OCP cluster. We will create other resources and
+present Nutanix HCI storage to them in the subsequent sections of the lab.

@@ -99,7 +99,7 @@ export default [
   },
   {
     path: '/',
-    component: ComponentCreator('/', 'f64'),
+    component: ComponentCreator('/', '445'),
     routes: [
       {
         path: '/',
@@ -146,6 +146,12 @@ export default [
       {
         path: '/ocp_ntnx_hci/prov_vm',
         component: ComponentCreator('/ocp_ntnx_hci/prov_vm', '676'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/optional_labs/objects_prep',
+        component: ComponentCreator('/optional_labs/objects_prep', '37f'),
         exact: true,
         sidebar: "tutorialSidebar"
       },

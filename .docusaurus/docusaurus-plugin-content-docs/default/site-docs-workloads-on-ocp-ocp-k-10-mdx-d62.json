@@ -18,8 +18,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "OCP: Provision Storage for Image Registry",
-    "permalink": "/optional_labs/ocp_image_registry"
+    "title": "Nutanix Objects as Backup Destination",
+    "permalink": "/optional_labs/objects_prep"
   },
   "next": {
     "title": "Deploying Workload",

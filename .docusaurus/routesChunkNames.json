@@ -186,7 +186,7 @@
     },
     "content": "content---markdown-page-393-028"
   },
-  "/-f64": {
+  "/-445": {
     "__comp": "__comp---theme-doc-page-1-be-9be",
     "__context": {
       "plugin": "plugin---e-08-402"
@@ -224,6 +224,10 @@
   "/ocp_ntnx_hci/prov_vm-676": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---ocp-ntnx-hci-prov-vmcd-7-455"
+  },
+  "/optional_labs/objects_prep-37f": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---optional-labs-objects-prepa-46-a83"
   },
   "/optional_labs/ocp_idp-7b7": {
     "__comp": "__comp---theme-doc-item-178-a40",

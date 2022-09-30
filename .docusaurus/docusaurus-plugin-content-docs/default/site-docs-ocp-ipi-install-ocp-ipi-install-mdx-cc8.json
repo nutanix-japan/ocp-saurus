@@ -16,11 +16,11 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "OCP: Assisted Installation",
-    "permalink": "/ocp_assisted_install/"
+    "title": "Provision Storage for Image Registry",
+    "permalink": "/optional_labs/ocp_image_registry"
   },
   "next": {
-    "title": "OCP: Create Additional OCP Clusters",
-    "permalink": "/optional_labs/ocp_vms_2"
+    "title": "OCP: Assisted Installation",
+    "permalink": "/ocp_assisted_install/"
   }
 }
