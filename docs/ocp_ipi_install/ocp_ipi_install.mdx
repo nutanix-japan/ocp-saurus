@@ -4,7 +4,7 @@ title: "OCP: IPI Installation"
 
 # OCP: IPI Installation
 
-OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives cusotmer a intutive and easy way to deploy OCP cluster on Nutanix AOS.
+OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives customer a intutive and easy way to deploy OCP cluster on Nutanix AOS.
 
 In this lab we will go through the steps of deploying OCP cluster using IPI.
 
@@ -66,9 +66,20 @@ We will be doing this lab
 
 If you are working on a HPOC cluster, make sure there are enough resources available to deploy a new OCP cluster.
 
-Remove existing OCP clusters that you dont require anymore.
+Remove existing OCP clusters that you don't require anymore.
 
 For latest OCP resource requirements refer to OpenShift portal [here.](https://docs.openshift.com/container-platform/4.9/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-minimum-resource-requirements_installing-platform-agnostic)
+
+At the time of writing this document the following resources are created by OCP IPI installer.
+
+We will create the following minimum amount of resources:
+  
+| OCP Role   |    Operating System    |    vCPU    |  RAM         | Storage   |         
+| -------------|  ---------------------- |  -------- | ----------- |  --------- |  
+| Master       |  RHCOS                 |  8        | 16 GB      |  120 GB   | 
+| Worker       |  RHCOS, RHEL 7.9, or RHEL 8.4  |  4  |  16 GB      |  120 GB | 
+
+> Reserve some additional space for bootstrap vms (deleted after install) and RHCOS image files.
 
 :::
 
@@ -117,6 +128,9 @@ We will first find two IPs for OCP ``api`` and ``apps`` ingress endpoints in our
    - Password: your cluster password 
    
    ```bash
+   acli net.add_to_ip_blacklist <your-ipam-ahv-network> ip_list=10.38.18.219,10.38.18.220
+   ```
+   ```bash title="Sample command here"
    acli net.add_to_ip_blacklist Primary ip_list=10.38.18.219,10.38.18.220
    ```
 
@@ -267,10 +281,12 @@ Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-pl
    ```bash title="Output"
    -rwxr----- 1 root root 69M Sep 13 04:09 ccoctl
    ```
-3. Create a Prism Central credentials file
+3. Create a Prism Central credentials file in ``creds`` directory
 
    ```bash {7}
-   cat << EOF > pc_credentials.yaml
+   mkdir creds
+   ##
+   cat << EOF > creds/pc_credentials.yaml
    credentials:
    - type: basic_auth
      data:
@@ -295,7 +311,7 @@ Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-pl
 5. Use the ccoctl tool to process the CredentialsRequests objects and generate secret manifest files. These manifests file will be used during OCP cluster Certification
 
    ```bash
-   ccoctl nutanix create-shared-secrets --credentials-requests-dir=credreqs --output-dir=. --credentials-source-filepath=pc_credentials.yaml
+   ccoctl nutanix create-shared-secrets --credentials-requests-dir=credreqs --output-dir=. --credentials-source-filepath=creds/pc_credentials.yaml
    ```
    ```buttonless title="Output"
    2022/09/29 23:53:36 Saved credentials configuration to: manifests/openshift-machine-api-nutanix-credentials-credentials.yaml
