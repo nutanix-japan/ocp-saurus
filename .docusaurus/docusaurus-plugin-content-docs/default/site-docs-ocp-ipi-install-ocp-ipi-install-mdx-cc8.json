@@ -16,8 +16,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Provision Storage for Image Registry",
-    "permalink": "/optional_labs/ocp_image_registry"
+    "title": "Day 0 and Day 1 Operations",
+    "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
   },
   "next": {
     "title": "OCP: Assisted Installation",

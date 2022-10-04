@@ -24,6 +24,13 @@ In future Nutanix CSI Operator may provide the following additional features:
 -   Deep insights
 -   Autopilot
 
+Nutanix CSI supports Nutanix Volumes and Nutanix Files as backend data storage systems
+
+| Storage Class Mode   |    ReadWriteOnce     |    ReadOnlyMany |  ReadWriteMany         | 
+| -------------|  ---------------------- |  -------- | ----------- | 
+| Nutanix Volumes       |  Yes                 |  Yes        | No     | 
+| Nutanix Files       |  Yes |  Yes  |  Yes    |  
+
 ## Install Nutanix CSI Operator
 
 1.  Login to you Windows Tools VM using the following credentials;
@@ -31,8 +38,7 @@ In future Nutanix CSI Operator may provide the following additional features:
     -   **Username** - <administrator@ntnxlab.local>
     -   **Password** - nutanix/4u
 
-2.  Using Chrome browser browse to Console URL you obtained in the
-    previous section.
+2.  Using Chrome browser browse to Console URL you obtained in the previous section.
 
     ```url
     https://console-openshift-console.apps.<initials>1.ntnxlab.local
@@ -51,7 +57,7 @@ In future Nutanix CSI Operator may provide the following additional features:
 
 4.  Click on **Log in** (if you are not already logged in)
 
-5.  Click on **Operator** \> **Operator Hub**
+5.  Click on **Operator** > **Operator Hub**
 
 6.  You will see all third party operators categorised by solution driven use cases (e.g. Big Data, Database, etc)
 
@@ -77,9 +83,25 @@ In future Nutanix CSI Operator may provide the following additional features:
 
 10. Click on **Install**
 
-11. Once installed you will see the operator in **Operator** \>
-    **Installed Operators**
+11. Once installed you will see the operator in **Operator** > **Installed Operators**
 
+12. Create a subscription of the Operator to attach it to `ntnx-system` namespace
+
+    ```bash
+    cat << EOF | oc create -f -
+    apiVersion: crd.nutanix.com/v1alpha1
+    kind: NutanixCsiStorage
+    metadata:
+        name: nutanixcsistorage
+        namespace: ntnx-system
+    spec:
+        namespace: ntnx-system
+    EOF
+    ```
+
+    ```bash title="Output"
+    nutanixcsistorage.crd.nutanix.com/nutanixcsistorage created
+    ```
 
 You have succesfully installed the Nutanix CSI operator to take care of StorageClass installation and upgrades.
 
@@ -243,24 +265,5 @@ import TabItem from '@theme/TabItem';
     # nutanix-volume   csi.nutanix.com   Delete          Immediate           true                   45h
     ```
 
-10. Create a subscription of the Operator to attach it to `ntnx-system`
-    namespace
-
-    ``` bash
-    cat << EOF | oc create -f -
-    apiVersion: crd.nutanix.com/v1alpha1
-    kind: NutanixCsiStorage
-    metadata:
-        name: nutanixcsistorage
-        namespace: ntnx-system
-    spec:
-        namespace: ntnx-system
-    EOF
-    ```
-
-    ``` bash
-    # example output here for the above command 
-    # nutanixcsistorage.crd.nutanix.com/nutanixcsistorage created
-    ```
 
 We have sucessfully installed Nutanix StorageClass so we can provision Physical Volumes (PV) and Physical Volume Claims (PVC) for the applications we will be deploying in this OCP cluster.

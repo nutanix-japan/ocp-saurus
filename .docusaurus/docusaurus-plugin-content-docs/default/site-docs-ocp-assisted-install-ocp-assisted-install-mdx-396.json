@@ -21,7 +21,7 @@
     "permalink": "/ocp_ipi_install/"
   },
   "next": {
-    "title": "Nutanix Objects as Backup Destination",
-    "permalink": "/optional_labs/objects_prep"
+    "title": "Deploy Nutanix CSI for OCP",
+    "permalink": "/ocp_ntnx_hci/ocp_csi"
   }
 }

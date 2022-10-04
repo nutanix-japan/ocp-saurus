@@ -42,18 +42,6 @@
             "label": "Day 0 and Day 1 Operations",
             "href": "/ocp_ntnx_hci/ocp_scale_out_in",
             "docId": "ocp_ntnx_hci/ocp_scale_out_in"
-          },
-          {
-            "type": "link",
-            "label": "Deploy Nutanix CSI for OCP",
-            "href": "/ocp_ntnx_hci/ocp_csi",
-            "docId": "ocp_ntnx_hci/ocp_csi"
-          },
-          {
-            "type": "link",
-            "label": "Provision Storage for Image Registry",
-            "href": "/optional_labs/ocp_image_registry",
-            "docId": "optional_labs/ocp_image_registry"
           }
         ],
         "collapsed": true,
@@ -82,6 +70,26 @@
             "label": "OCP: Assisted Installation",
             "href": "/ocp_assisted_install/",
             "docId": "ocp_assisted_install/ocp_assisted_install"
+          }
+        ],
+        "collapsed": true,
+        "collapsible": true
+      },
+      {
+        "type": "category",
+        "label": "Nutanix Storage CSI",
+        "items": [
+          {
+            "type": "link",
+            "label": "Deploy Nutanix CSI for OCP",
+            "href": "/ocp_ntnx_hci/ocp_csi",
+            "docId": "ocp_ntnx_hci/ocp_csi"
+          },
+          {
+            "type": "link",
+            "label": "Provision Storage for Image Registry",
+            "href": "/optional_labs/ocp_image_registry",
+            "docId": "optional_labs/ocp_image_registry"
           }
         ],
         "collapsed": true,

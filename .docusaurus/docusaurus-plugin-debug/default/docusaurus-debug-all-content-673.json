@@ -66,8 +66,8 @@
                 "permalink": "/ocp_ipi_install/"
               },
               "next": {
-                "title": "Nutanix Objects as Backup Destination",
-                "permalink": "/optional_labs/objects_prep"
+                "title": "Deploy Nutanix CSI for OCP",
+                "permalink": "/ocp_ntnx_hci/ocp_csi"
               }
             },
             {
@@ -88,8 +88,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Provision Storage for Image Registry",
-                "permalink": "/optional_labs/ocp_image_registry"
+                "title": "Day 0 and Day 1 Operations",
+                "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
               },
               "next": {
                 "title": "OCP: Assisted Installation",
@@ -144,8 +144,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Day 0 and Day 1 Operations",
-                "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
+                "title": "OCP: Assisted Installation",
+                "permalink": "/ocp_assisted_install/"
               },
               "next": {
                 "title": "Provision Storage for Image Registry",
@@ -176,8 +176,8 @@
                 "permalink": "/ocp_ntnx_hci/ocp_vms"
               },
               "next": {
-                "title": "Deploy Nutanix CSI for OCP",
-                "permalink": "/ocp_ntnx_hci/ocp_csi"
+                "title": "OCP: IPI Installation",
+                "permalink": "/ocp_ipi_install/"
               }
             },
             {
@@ -254,8 +254,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP: Assisted Installation",
-                "permalink": "/ocp_assisted_install/"
+                "title": "Provision Storage for Image Registry",
+                "permalink": "/optional_labs/ocp_image_registry"
               },
               "next": {
                 "title": "Deploying Backup Application",
@@ -310,8 +310,8 @@
                 "permalink": "/ocp_ntnx_hci/ocp_csi"
               },
               "next": {
-                "title": "OCP: IPI Installation",
-                "permalink": "/ocp_ipi_install/"
+                "title": "Nutanix Objects as Backup Destination",
+                "permalink": "/optional_labs/objects_prep"
               }
             },
             {
@@ -503,14 +503,6 @@
                   {
                     "type": "doc",
                     "id": "ocp_ntnx_hci/ocp_scale_out_in"
-                  },
-                  {
-                    "type": "doc",
-                    "id": "ocp_ntnx_hci/ocp_csi"
-                  },
-                  {
-                    "type": "doc",
-                    "id": "optional_labs/ocp_image_registry"
                   }
                 ],
                 "collapsed": true,
@@ -535,6 +527,22 @@
                   {
                     "type": "doc",
                     "id": "ocp_assisted_install/ocp_assisted_install"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "category",
+                "label": "Nutanix Storage CSI",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "ocp_ntnx_hci/ocp_csi"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "optional_labs/ocp_image_registry"
                   }
                 ],
                 "collapsed": true,
