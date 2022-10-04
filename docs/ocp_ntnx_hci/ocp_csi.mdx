@@ -262,7 +262,47 @@ In this section we will install StorageClass with Nutanix Files target.
 
 ### Create a File Share in Nutanix Files
 
+Let's create a new share to provide it as a storage location for our storage class based on Nutanix Files.
 
+1. In Prism Element, go to Menu > Files 
+
+2. Select the **BootcampFS** files server and click on **Launch Files Console** (this will open in a new tab)
+
+3. Click on **Shares > Create a New Share**
+
+4. Create a new ``NFSv4`` share by filling in the following details
+   
+   - **Name** - Initials_nfs (E.g. xyz_nfs)
+   - **Description** - created for Files CSI on OCP 
+   - **Share Path** - leave blank
+   - **Max Size** - 100 GiB 
+   - **Primary Protocol Access** - NFS
+   
+   :::caution
+
+   Although Nutanix Files supports NFSv3 and NFSv4, only NFSv4 works with Storage Class. 
+
+   Make sure your Files share is NFSv4. 
+
+   This issue may be resolved in future via software update to Nutanix CSI. 
+
+   ::: 
+
+4. Click on **Next**
+
+5. Fill in the following details:
+   
+   - **General**
+     - **Enable Compression** - checked
+   - **Authentication** - System
+   - **Default Access** - Read-Write 
+   - **Squash** - None 
+   - **Anonymous UID** - leave blank
+   - **Anonymous GID** - leave blank
+
+6. Click **Next**
+
+7. Confirm your setting and click on **Create**
 
 ### Create File Share as a CSI target
 
@@ -281,6 +321,7 @@ In this section we will install StorageClass with Nutanix Files target.
      storageType: NutanixFiles
    reclaimPolicy: Delete
    volumeBindingMode: Immediate
+   EOF
    ```
 2. Edit the file to make configure your file share and file server 
 
