@@ -24,12 +24,14 @@ In future Nutanix CSI Operator may provide the following additional features:
 -   Deep insights
 -   Autopilot
 
-Nutanix CSI supports Nutanix Volumes and Nutanix Files as backend data storage systems
+Nutanix CSI supports Nutanix Volumes and Nutanix Files as backend data storage systems.
 
 | Storage Class Mode   |    ReadWriteOnce     |    ReadOnlyMany |  ReadWriteMany         | 
 | -------------|  ---------------------- |  -------- | ----------- | 
 | Nutanix Volumes       |  Yes                 |  Yes        | No     | 
 | Nutanix Files       |  Yes |  Yes  |  Yes    |  
+
+In this lab, we will deploy both Nutanix Volumes and Files Storage Class and use them throughout the bootcamp.
 
 ## Install Nutanix CSI Operator
 
@@ -53,7 +55,6 @@ Nutanix CSI supports Nutanix Volumes and Nutanix Files as backend data storage s
 
     -   **Username** - kubeadmin
     -   **Password** - password from previous section
-        `ocp_cluster_login`{.interpreted-text role="ref"}
 
 4.  Click on **Log in** (if you are not already logged in)
 
@@ -76,7 +77,7 @@ Nutanix CSI supports Nutanix Volumes and Nutanix Files as backend data storage s
 9.  In the Operator install wizard choose the following:
 
     -   **Update channel** - stable
-    -   **Operator recommended Namespace** - ntnx-system
+    -   **Operator recommended Namespace** - ``ntnx-system`` (or ``openshift-cluster-csi-drivers`` namespace)
     -   **Update approval** - Automatic (admins usually choose Manual option where control over updates is necessary)
 
     ![](ocp_csi_images/ocp_operator_install_options.png)
@@ -85,33 +86,20 @@ Nutanix CSI supports Nutanix Volumes and Nutanix Files as backend data storage s
 
 11. Once installed you will see the operator in **Operator** > **Installed Operators**
 
-12. Create a subscription of the Operator to attach it to `ntnx-system` namespace
+12. Once installed, click on the Details tab of the Operator page and click on **Create Instance**
 
-    ```bash
-    cat << EOF | oc create -f -
-    apiVersion: crd.nutanix.com/v1alpha1
-    kind: NutanixCsiStorage
-    metadata:
-        name: nutanixcsistorage
-        namespace: ntnx-system
-    spec:
-        namespace: ntnx-system
-    EOF
-    ```
-
-    ```bash title="Output"
-    nutanixcsistorage.crd.nutanix.com/nutanixcsistorage created
-    ```
+13. Click on **Create** button
 
 You have succesfully installed the Nutanix CSI operator to take care of StorageClass installation and upgrades.
 
 :::info
 
-Operators can also be installed using `oc` commandline. For more information refer to OCP documentation [here.](https://docs.openshift.com/container-platform/4.7/operators/admin/olm-adding-operators-to-cluster.html#olm-installing-operator-from-operatorhub-using-cli_olm-adding-operators-to-a-cluster)
+OCP Operators can also be installed using `oc` commandline. For more information refer to OCP documentation [here.](https://docs.openshift.com/container-platform/4.7/operators/admin/olm-adding-operators-to-cluster.html#olm-installing-operator-from-operatorhub-using-cli_olm-adding-operators-to-a-cluster)
 
+Nutanix CSI can be installed using ``helm`` charts as well as you would do in any implementation of kubernetes. See [here](https://github.com/nutanix/csi-plugin) for more details. 
 :::
 
-## Install StorageClass
+## Install StorageClass with Nutanix Volumes 
 
 From now you will be performing commands in **LB_DNS** VM's console.
 
@@ -204,7 +192,7 @@ import TabItem from '@theme/TabItem';
     -   Data Services IP and
     -   Storage Container Name
 
-    ```zsh {4}
+    ```zsh {15,18}
     cat << EOF >  storageclass.yaml
     apiVersion: storage.k8s.io/v1
     kind: StorageClass
@@ -241,9 +229,8 @@ import TabItem from '@theme/TabItem';
     oc apply -f storageclass.yaml
     ```
 
-    ``` bash
-    # example output here for the above command
-    # storageclass.storage.k8s.io/nutanix-volume created
+    ```buttonless title="Output"
+    storageclass.storage.k8s.io/nutanix-volume created
     ```
 
 8.  Make this your default StorageClass
@@ -259,11 +246,64 @@ import TabItem from '@theme/TabItem';
     oc get StorageClass -A
     ```
 
-    ``` bash
-    # example output here for the above command
-    # NAME             PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
-    # nutanix-volume   csi.nutanix.com   Delete          Immediate           true                   45h
+    ```buttonless title="Output"
+    NAME                      PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+    nutanix-volume(default)   csi.nutanix.com   Delete          Immediate           true                   4m
     ```
 
 
 We have sucessfully installed Nutanix StorageClass so we can provision Physical Volumes (PV) and Physical Volume Claims (PVC) for the applications we will be deploying in this OCP cluster.
+
+## Install StorageClass with Nutanix Files
+
+Nutanix CSI with Nutanix Files as a target provides ReadWriteMany (RWM) capabilities meaning many pods can write to to the target storage at the same time.
+
+In this section we will install StorageClass with Nutanix Files target.
+
+### Create a File Share in Nutanix Files
+
+
+
+### Create File Share as a CSI target
+
+1. Use the following yaml file to create a storage class with Nutanix files as destination
+
+   ```bash 
+   cat <<EOF > storageclass_files.yaml 
+   apiVersion: storage.k8s.io/v1
+   kind: StorageClass
+   metadata:
+     name: nutanix-files
+   provisioner: com.nutanix.csi
+   parameters:
+     nfsPath: /xyz_nfs                    ## << use the file share you created in the previous section
+     nfsServer: bootcamp-fs.ntnxlab.local ## << use the file server 
+     storageType: NutanixFiles
+   reclaimPolicy: Delete
+   volumeBindingMode: Immediate
+   ```
+2. Edit the file to make configure your file share and file server 
+
+   ```bash
+   vi storageclass_files.yaml
+   ```
+
+3. Create the storage class 
+
+   ```bash
+   oc apply -f storageclass_files.yaml
+   ```
+   ```buttonless title="Output"
+   storageclass.storage.k8s.io/nutanix-files created
+   ```
+4. List your storage classes
+
+   ``` bash
+   oc get StorageClass -A
+   ```
+
+   ```buttonless title="Output"
+   NAME                      PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+   nutanix-volume(default)   csi.nutanix.com   Delete          Immediate           true                   8m
+   nutanix-files             csi.nutanix.com   Delete          Immediate           true                   4m      
+   ```
