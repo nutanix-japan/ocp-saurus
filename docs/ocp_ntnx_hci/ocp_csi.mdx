@@ -2,6 +2,9 @@
 sidebar_position: 7
 title: "Deploy Nutanix CSI for OCP"
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+    
 
 # OCP: Deploy Nutanix CSI for OCP
 
@@ -77,7 +80,7 @@ In this lab, we will deploy both Nutanix Volumes and Files Storage Class and use
 9.  In the Operator install wizard choose the following:
 
     -   **Update channel** - stable
-    -   **Operator recommended Namespace** - ``ntnx-system`` (or ``openshift-cluster-csi-drivers`` namespace)
+    -   **Operator recommended Namespace** - ``openshift-cluster-csi-drivers`` (automatically chosen)
     -   **Update approval** - Automatic (admins usually choose Manual option where control over updates is necessary)
 
     ![](ocp_csi_images/ocp_operator_install_options.png)
@@ -90,6 +93,8 @@ In this lab, we will deploy both Nutanix Volumes and Files Storage Class and use
 
 13. Click on **Create** button
 
+This will create a NutanixCsiStorage resource to deploy your driver.
+
 You have succesfully installed the Nutanix CSI operator to take care of StorageClass installation and upgrades.
 
 :::info
@@ -100,50 +105,39 @@ Nutanix CSI can be installed using ``helm`` charts as well as you would do in an
 :::
 
 ## Install StorageClass with Nutanix Volumes 
-
-From now you will be performing commands in **LB_DNS** VM's console.
-
-The lab instructions will have templates for these commands. You will have to change necessary areas to suit your HPOC/SPOC details.
-
-:::info
-
-We suggest doing the following when modifications to commands are required:
-
-1.  Edit code from lab instructions using vi/nano/vim
-
-2.  Modify the required fields (highlighted)
-
-3.  Paste the commands into the terminal of LB_DNS vm through Calm UI
-
-:::
-
-Use the following key combinations to paste content into Calm invoked terminal. 
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs groupId="operating-systems">
-    <TabItem value="mac" label="macOS">Use <b>Command + v</b> to paste.</TabItem>
-    <TabItem value="win" label="Windows">Use <b>Shift + Insert</b> to paste.</TabItem>
-</Tabs>
+    
+1.  Depending on the OCP cluster installation you chose, log on to the **UserXX-LinuxToolsVM** or **LB_DNS** VM to be able to access OCP cluster. 
 
     
-1.  In Calm go to your **Applications** > **Openshift ocp1** application
+    :::caution How did you install OCP?
 
-2.  Go to the **Services**
+    If you installed OCP using NCM (Calm), you will be performing commands in **LB_DNS** VM's console.
 
-3.  Select your **LB_DNS** service
+    We suggest doing the following when modifications to commands are required:
 
-4.  Click on **Open Terminal**
+    1.  Edit code from lab instructions using vi/nano/vim
 
-    ![](ocp_csi_images/ocp_lbdns_terminal.png)
+    2.  Modify the required fields (highlighted)
 
-    The terminal will open in a new browser tab
+    3.  Paste the commands into the terminal of LB_DNS vm through Calm UI
 
-5.  Export the OCP cluster\'s KUBECONFIG file to environment so we can perform `oc` commands
+    Use the following key combinations to paste content into Calm invoked terminal. 
 
-    ``` bash
+    ```mdx-code-block
+    <Tabs groupId="operating-systems">
+        <TabItem value="mac" label="macOS">Use <b>Command + v</b> to paste.</TabItem>
+        <TabItem value="win" label="Windows">Use <b>Shift + Insert</b> to paste.</TabItem>
+    </Tabs>
+    ```
+    :::
+
+5.  Export the OCP cluster's KUBECONFIG file to environment so we can perform `oc` commands
+
+    ``` bash title="On NCM deployed OCP Clusters"
     export KUBECONFIG=~/openshift/auth/kubeconfig
+    ```
+    ``` bash title="On IPI deployed OCP Clusters"
+    export KUBECONFIG=/root/xyz/auth/kubeconfig 
     ```
 
 6.  Create a kubernetes secret that the StorageClass can use to access the Nutanix HCI storage
@@ -152,19 +146,19 @@ import TabItem from '@theme/TabItem';
 
     **Open a text editor (vi / nano), paste the contents below and change the fields indicated to suit your environment. Example is also provided**
 
-    **Be sure to use your environment\'s details for the following fields:**
+    **Be sure to use your environment's details for the following fields:**
 
     -   Prism Element IP
     -   Prism Element UserName
     -   Prism Element Password
 
-    ```bash {4}
+    ```bash {8}
     cat << EOF > csi_secret.yaml
     apiVersion: v1
     kind: Secret
     metadata:
       name: ntnx-secret
-      namespace: ntnx-system
+      namespace: openshift-cluster-csi-drivers
     stringData:
       key: <Prism Element IP>:9440:<Prism Element UserName>:<Prism Element Password>    # << change this
       # example: 
@@ -187,33 +181,27 @@ import TabItem from '@theme/TabItem';
     # secret/ntnx-secret created
     ```
 
-7.  Copy the following StorageClass configuration script, modify required fields and execute it in the command line
+7.  Copy the following StorageClass configuration script, modify ``Storage Container Name`` field and execute it in the command line
 
-    -   Data Services IP and
-    -   Storage Container Name
-
-    ```zsh {15,18}
+    ```zsh {15}
     cat << EOF >  storageclass.yaml
-    apiVersion: storage.k8s.io/v1
     kind: StorageClass
+    apiVersion: storage.k8s.io/v1
     metadata:
-        name: nutanix-volume
+      name: nutanix-volumes
     provisioner: csi.nutanix.com
     parameters:
       csi.storage.k8s.io/provisioner-secret-name: ntnx-secret
-      csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
+      csi.storage.k8s.io/provisioner-secret-namespace: openshift-cluster-csi-drivers
       csi.storage.k8s.io/node-publish-secret-name: ntnx-secret
-      csi.storage.k8s.io/node-publish-secret-namespace: ntnx-system
+      csi.storage.k8s.io/node-publish-secret-namespace: openshift-cluster-csi-drivers
       csi.storage.k8s.io/controller-expand-secret-name: ntnx-secret
-      csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
+      csi.storage.k8s.io/controller-expand-secret-namespace: openshift-cluster-csi-drivers
       csi.storage.k8s.io/fstype: ext4
-      dataServiceEndPoint: <Data Services IP>:3260   # << change this
-      # example: 
-      # dataServiceEndPoint: 10.38.2.72:3260
-      storageContainer: <Storage Container Name>     # << change this
-      # example: 
-      # storageContainer: Default
+      storageContainer: default ## << Change this to match your Storage Container
       storageType: NutanixVolumes
+      isLVMVolume: "true"
+      numLVMDisks: "4"
     allowVolumeExpansion: true
     reclaimPolicy: Delete
     EOF
@@ -317,7 +305,7 @@ Let's create a new share to provide it as a storage location for our storage cla
    provisioner: com.nutanix.csi
    parameters:
      nfsPath: /xyz_nfs                    ## << use the file share you created in the previous section
-     nfsServer: bootcamp-fs.ntnxlab.local ## << use the file server 
+     nfsServer: bootcampfs.ntnxlab.local  ## << use your file server name - make sure name resolution is working
      storageType: NutanixFiles
    reclaimPolicy: Delete
    volumeBindingMode: Immediate
@@ -344,7 +332,7 @@ Let's create a new share to provide it as a storage location for our storage cla
    ```
 
    ```buttonless title="Output"
-   NAME                      PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
-   nutanix-volume(default)   csi.nutanix.com   Delete          Immediate           true                   8m
-   nutanix-files             csi.nutanix.com   Delete          Immediate           true                   4m      
+   NAME                       PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+   nutanix-files              com.nutanix.csi   Delete          Immediate           false                  67s
+   nutanix-volume (default)   csi.nutanix.com   Delete          Immediate           true                   17m   
    ```
