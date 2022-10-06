@@ -46,7 +46,7 @@ export default {
     "docs": {
       "sidebar": {
         "autoCollapseCategories": true,
-        "hideable": false
+        "hideable": true
       },
       "versionPersistence": "localStorage"
     },

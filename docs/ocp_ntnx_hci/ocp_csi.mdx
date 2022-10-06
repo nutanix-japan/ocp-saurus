@@ -218,13 +218,13 @@ Nutanix CSI can be installed using ``helm`` charts as well as you would do in an
     ```
 
     ```buttonless title="Output"
-    storageclass.storage.k8s.io/nutanix-volume created
+    storageclass.storage.k8s.io/nutanix-volumes created
     ```
 
 8.  Make this your default StorageClass
 
     ``` bash
-    oc patch storageclass nutanix-volume -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+    oc patch storageclass nutanix-volumes -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
     #
     oc get sc
     ```
@@ -236,7 +236,7 @@ Nutanix CSI can be installed using ``helm`` charts as well as you would do in an
 
     ```buttonless title="Output"
     NAME                      PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
-    nutanix-volume(default)   csi.nutanix.com   Delete          Immediate           true                   4m
+    nutanix-volumes(default)   csi.nutanix.com   Delete          Immediate           true                   4m
     ```
 
 
@@ -246,7 +246,27 @@ We have sucessfully installed Nutanix StorageClass so we can provision Physical 
 
 Nutanix CSI with Nutanix Files as a target provides ReadWriteMany (RWM) capabilities meaning many pods can write to to the target storage at the same time.
 
-In this section we will install StorageClass with Nutanix Files target.
+In this section we will install StorageClass with Nutanix Files target in ``dynamic`` mode. 
+
+<details>
+<summary>Curious about static mode?</summary>
+
+``Static`` mode Files stoage class is also available, use the following manifest to create this. The file share needs to manually created before the storage class can be configured.
+
+```yaml {7-8}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nutanix-files
+provisioner: csi.nutanix.com
+parameters:
+  nfsPath: /my_nfs4_share         ##use the file share name - must be NFSv4
+  nfsServer: apjsme-fs.apjsme.com ##use the fqdn of your Nutanix Files server
+  storageType: NutanixFiles
+```
+</details>
+
+<!--- commented for later use
 
 ### Create a File Share in Nutanix Files
 
@@ -292,38 +312,45 @@ Let's create a new share to provide it as a storage location for our storage cla
 
 7. Confirm your setting and click on **Create**
 
+-->
+
 ### Create File Share as a CSI target
 
 1. Use the following yaml file to create a storage class with Nutanix files as destination
 
    ```bash 
-   cat <<EOF > storageclass_files.yaml 
-   apiVersion: storage.k8s.io/v1
+   cat << EOF 
    kind: StorageClass
+   apiVersion: storage.k8s.io/v1
    metadata:
-     name: nutanix-files
-   provisioner: com.nutanix.csi
+       name: nutanix-dynfiles
+   provisioner: csi.nutanix.com
    parameters:
-     nfsPath: /xyz_nfs                    ## << use the file share you created in the previous section
-     nfsServer: bootcampfs.ntnxlab.local  ## << use your file server name - make sure name resolution is working
+     dynamicProv: ENABLED
+     nfsServerName: BootcampFS    ## << Change this to your Files server name (case-sensitive)
+     csi.storage.k8s.io/provisioner-secret-name: ntnx-secret
+     csi.storage.k8s.io/provisioner-secret-namespace: openshift-cluster-csi-drivers
+     csi.storage.k8s.io/node-publish-secret-name: ntnx-secret
+     csi.storage.k8s.io/node-publish-secret-namespace: openshift-cluster-csi-drivers
+     csi.storage.k8s.io/controller-expand-secret-name: ntnx-secret
+     csi.storage.k8s.io/controller-expand-secret-namespace: openshift-cluster-csi-drivers
      storageType: NutanixFiles
-   reclaimPolicy: Delete
-   volumeBindingMode: Immediate
-   EOF
+     description: "added by OCP dynamic provisioning"
+   allowVolumeExpansion: true
    ```
 2. Edit the file to make configure your file share and file server 
 
    ```bash
-   vi storageclass_files.yaml
+   vi nutanix-dynfiles.yaml
    ```
 
 3. Create the storage class 
 
    ```bash
-   oc apply -f storageclass_files.yaml
+   oc apply -f nutanix-dynfiles.yaml
    ```
    ```buttonless title="Output"
-   storageclass.storage.k8s.io/nutanix-files created
+   storageclass.storage.k8s.io/nutanix-dynfiles created
    ```
 4. List your storage classes
 
@@ -333,6 +360,8 @@ Let's create a new share to provide it as a storage location for our storage cla
 
    ```buttonless title="Output"
    NAME                       PROVISIONER       RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
-   nutanix-files              com.nutanix.csi   Delete          Immediate           false                  67s
-   nutanix-volume (default)   csi.nutanix.com   Delete          Immediate           true                   17m   
+   nutanix-dynfiles           csi.nutanix.com   Delete          Immediate           true                   67s
+   nutanix-volumes (default)  csi.nutanix.com   Delete          Immediate           true                   17m   
    ```
+
+Now that you have deployed two storage classes with backend storage of Nutanix Volumes and Files, we will use them in our subesequent labs.
