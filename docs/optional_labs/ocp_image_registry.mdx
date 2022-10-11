@@ -6,12 +6,21 @@ import TabItem from '@theme/TabItem';
 
 OCP comes with a in-built container image registry. The advantages of these container image registry are the following:
 
+> From [Red Hat](https://docs.openshift.com/container-platform/4.11/registry/index.html) - The registry is typically used as a publication target for images built on the cluster, as well as being a source of images for workloads running on the cluster. When a new image is pushed to the registry, the cluster is notified of the new image and other components can react to and consume the updated image.
+
 -   Integrates with OCP clusters authentication and authorization system
 -   Provides a image source local to the cluster for all running workloads
 -   Integrates with OCP clusters CICD workflows - for example when a new container images is uploaded to this registry, the cluster can update
     the image of all the running running contianers
 -   Registry can be easily scaled up or down
 -   Image data is stored in a cloud storage
+
+:::caution OCP Image Registry Scope 
+
+Internal image registry should not be used as enterprise-wide image registry. For this use-case Quay is part of OpenShift OPP subscription. 
+For disconnected scenarios there is a limited Quay-Version available: “mirror-registry”
+
+:::
 
 There are two ways of provisioning Nutanix HCI based storage to OpenShift Image Registry:
 
