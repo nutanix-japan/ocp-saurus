@@ -133,10 +133,10 @@ Nutanix CSI can be installed using ``helm`` charts as well as you would do in an
 
 5.  Export the OCP cluster's KUBECONFIG file to environment so we can perform `oc` commands
 
-    ``` bash title="On NCM deployed OCP Clusters"
+    ``` bash title="On NCM deployed OCP Clusters - use LB_DNS VM"
     export KUBECONFIG=~/openshift/auth/kubeconfig
     ```
-    ``` bash title="On IPI deployed OCP Clusters"
+    ``` bash title="On IPI deployed OCP Clusters - use UserXX-LinuxToolsVM"
     export KUBECONFIG=/root/xyz/auth/kubeconfig 
     ```
 
@@ -251,7 +251,7 @@ In this section we will install StorageClass with Nutanix Files target in ``dyna
 <details>
 <summary>Curious about static mode?</summary>
 
-``Static`` mode Files stoage class is also available, use the following manifest to create this. The file share needs to manually created before the storage class can be configured.
+``Static`` mode Files storage class is also available with Nutanix CSI. Use the following manifest to create this. The file share needs to manually created before the storage class can be configured.
 
 ```yaml {7-8}
 apiVersion: storage.k8s.io/v1

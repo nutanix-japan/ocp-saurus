@@ -160,10 +160,10 @@ In this section we will add PC, API and APPS Ingress DNS records for lookup by O
 2. Open PowerShell as Administrator and create the two A records
 
    ```PowerShell title="Add the API A record - use your own subdomain"
-   Add-DnsServerResourceRecordA -Name api.<your_ocp_cluster_subdomain> -IPv4Address 10.38.18.219 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local
+   Add-DnsServerResourceRecordA -Name api.<your_ocp_cluster_subdomain> -IPv4Address <your API IP> -ZoneName ntnxlab.local -ZoneScope ntnxlab.local
    ```
    ```PowerShell title="Add the apps Ingress A record - use your own subdomain"
-   Add-DnsServerResourceRecordA -Name *.apps.api.<your_ocp_cluster_subdomain> -IPv4Address 10.38.18.220 -ZoneName ntnxlab.local -ZoneScope ntnxlab.local 
+   Add-DnsServerResourceRecordA -Name *.apps.<your_ocp_cluster_subdomain> -IPv4Address <your Ingress IP> -ZoneName ntnxlab.local -ZoneScope ntnxlab.local 
    ```
    ```PowerShell title="Add the Prism Central A record"
    Add-DnsServerResourceRecordA -Name pc -IPv4Address <your PC IP> -ZoneName ntnxlab.local -ZoneScope ntnxlab.local 
@@ -255,81 +255,6 @@ In this section please using the download links provided is also ok.
    -rwxr-xr-x 1 root root 481972224 Sep  1 16:07 openshift-install
    -rw-r--r-- 1 root root      2819 Sep 22 05:27 pull_secret.json
    ```
-
-### Setting up Cloud Credential Operator Utility (CCOCTL)
-
-Setting up of is necessary for Nutanix cluster credentials to be used with OCP cluster. 
-
-Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/about-cloud-credential-operator.html) for more information. 
-
-1. In the UserXX-LinuxToolsVM, download and setup ``ccoctl`` using the following commands
-
-   ```bash
-   RELEASE_IMAGE=$(openshift-install version | awk '/release image/ {print $3}')
-
-   CCO_IMAGE=$(oc adm release info --image-for='cloud-credential-operator' $RELEASE_IMAGE)
-
-   oc image extract $CCO_IMAGE --file="/usr/bin/ccoctl" -a pull_secret.json
-
-   chmod u+x ccoctl && cp ccoctl /usr/local/bin/ 
-   ```
-2. Make sure the ccoctl file is present 
-
-   ```bash
-   ls -lh ccoctl 
-   ```
-   ```bash title="Output"
-   -rwxr----- 1 root root 69M Sep 13 04:09 ccoctl
-   ```
-3. Create a Prism Central credentials file in ``creds`` directory
-
-   ```bash {7}
-   mkdir creds
-   ##
-   cat << EOF > creds/pc_credentials.yaml
-   credentials:
-   - type: basic_auth
-     data:
-       prismCentral:
-         username: "admin"
-         password: "PC-PASSWORD"
-   EOF
-   ```
-
-4. Edit the ``pc_credentials.yaml`` file to change your Prism Central password
-
-   ```bash
-   vi pc_credentials.yaml
-   ```
-
-4. Extract the CredentialsRequests objects for Nutanix Prism Central and store in a ``credreqs`` directory
-
-   ```bash
-   oc adm release extract --credentials-requests --cloud=nutanix --to=credreqs -a pull_secret.json $RELEASE_IMAGE
-   ```
-
-5. Use the ccoctl tool to process the CredentialsRequests objects and generate secret manifest files. These manifests file will be used during OCP cluster Certification
-
-   ```bash
-   ccoctl nutanix create-shared-secrets --credentials-requests-dir=credreqs --output-dir=. --credentials-source-filepath=creds/pc_credentials.yaml
-   ```
-   ```buttonless title="Output"
-   2022/09/29 23:53:36 Saved credentials configuration to: manifests/openshift-machine-api-nutanix-credentials-credentials.yaml
-   ```
-
-6. Check the ``manifests/openshift-machine-api-nutanix-credentials-credentials.yaml`` file to make sure the contents are good
-
-   ```buttonless {8}
-   apiVersion: v1
-   kind: Secret
-   metadata:
-      name: nutanix-credentials
-      namespace: openshift-machine-api
-   type: Opaque
-   data:
-      credentials: W3sidHlwZSI6ImJhc2ljX2F1dGgiLCJkYXRhIjp7InByaXNtQ2VudHJhbCI6eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiJ0ZWNoWDIwMjAhIn0sInByaXNtRWxlbWVudHMiOm51bGx9fV0=
-   ```
-
 ### Creating and Installing SSL Certificate on Prism Central
 
 In this section we will do the following:
@@ -365,7 +290,7 @@ All this will be done on the UserXX-LinuxToolsVM.
    Email Address []:first.last@nutanix.com
    ```
    
-2. Create a configuration file for Prism Central's certificate parameters. Feel free to change your country, state and locality names.
+2. Create a configuration file for Prism Central's certificate parameters 
 
    ```bash
    cat << EOF > pc.conf
@@ -385,7 +310,6 @@ All this will be done on the UserXX-LinuxToolsVM.
    subjectAltName = @alt_names
    [alt_names]
    DNS.1  = pc.ntnxlab.local
-   DNS.2  = prism.ntnxlab.local
    EOF
    ```
 3. Create the private key and CSR for Prism Central
@@ -422,7 +346,7 @@ All this will be done on the UserXX-LinuxToolsVM.
 5. Create a file called pctext to store the DNS/SAN names
 
    ```bash
-   echo "subjectAltName = DNS:pc.ntnxlab.local, DNS:prism.ntnxlab.local" >> pctext
+   echo "subjectAltName = DNS:pc.ntnxlab.local" >> pctext
    ```
 6. Sign the CSR using rootCA's private key and produce a certificate for Prism Central
 
@@ -517,6 +441,80 @@ All this will be done on the UserXX-LinuxToolsVM.
 
     You have completed the configuring SSL certificate pre-requisites for IPI installation. 
 
+### Setting up Cloud Credential Operator Utility (CCOCTL)
+
+Setting up of is necessary for Nutanix cluster credentials to be used with OCP cluster. 
+
+Refer to [Cloud Credential Operator CCO](https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/about-cloud-credential-operator.html) for more information. 
+
+1. In the UserXX-LinuxToolsVM, download and setup ``ccoctl`` using the following commands
+
+   ```bash
+   RELEASE_IMAGE=$(openshift-install version | awk '/release image/ {print $3}')
+
+   CCO_IMAGE=$(oc adm release info --image-for='cloud-credential-operator' $RELEASE_IMAGE)
+
+   oc image extract $CCO_IMAGE --file="/usr/bin/ccoctl" -a pull_secret.json
+
+   chmod u+x ccoctl && cp ccoctl /usr/local/bin/ 
+   ```
+2. Make sure the ccoctl file is present 
+
+   ```bash
+   ls -lh ccoctl 
+   ```
+   ```bash title="Output"
+   -rwxr----- 1 root root 69M Sep 13 04:09 ccoctl
+   ```
+3. Create a Prism Central credentials file in ``creds`` directory
+
+   ```bash {7}
+   mkdir creds
+   ##
+   cat << EOF > creds/pc_credentials.yaml
+   credentials:
+   - type: basic_auth
+     data:
+       prismCentral:
+         username: "admin"
+         password: "PC-PASSWORD"
+   EOF
+   ```
+
+4. Edit the ``pc_credentials.yaml`` file to change your Prism Central password
+
+   ```bash
+   vi pc_credentials.yaml
+   ```
+
+4. Extract the CredentialsRequests objects for Nutanix Prism Central and store in a ``credreqs`` directory
+
+   ```bash
+   oc adm release extract --credentials-requests --cloud=nutanix --to=credreqs -a pull_secret.json $RELEASE_IMAGE
+   ```
+
+5. Use the ccoctl tool to process the CredentialsRequests objects and generate secret manifest files. These manifests file will be used during OCP cluster Certification
+
+   ```bash
+   ccoctl nutanix create-shared-secrets --credentials-requests-dir=credreqs --output-dir=. --credentials-source-filepath=creds/pc_credentials.yaml
+   ```
+   ```buttonless title="Output"
+   2022/09/29 23:53:36 Saved credentials configuration to: manifests/openshift-machine-api-nutanix-credentials-credentials.yaml
+   ```
+
+6. Check the ``manifests/openshift-machine-api-nutanix-credentials-credentials.yaml`` file to make sure the contents are good
+
+   ```buttonless {8}
+   apiVersion: v1
+   kind: Secret
+   metadata:
+      name: nutanix-credentials
+      namespace: openshift-machine-api
+   type: Opaque
+   data:
+      credentials: W3sidHlwZSI6ImJhc2ljX2F1dGgiLCJkYXRhIjp7InByaXNtQ2VudHJhbCI6eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiJ0ZWNoWDIwMjAhIn0sInByaXNtRWxlbWVudHMiOm51bGx9fV0=
+   ```
+
 ## Creating IPI Installation Config File 
 
 In this section we will create our installation configuration files which will be then used in the next section to deploy an OCP cluster.
@@ -543,7 +541,7 @@ In this section we will create our installation configuration files which will b
    ```bash
    ssh-keygen
    ```
-   ```buttonless title="Execution example - accept default values"
+   ```buttonless title="Execution example - accept default values and no passphrase"
    Generating public/private rsa key pair.
    Enter file in which to save the key (/root/.ssh/id_rsa): 
    /root/.ssh/id_rsa already exists.
@@ -627,7 +625,7 @@ In this section we will create our installation configuration files which will b
          <li>Move the cursor the to beigging on the line "-----BEGIN CERTIFICATE-----"</li>
          <li>Use ``crtl`` + ``v`` keyboard combination to enter visual block mode </li>
          <li>Select the lines until "-----END CERTIFICATE-----"</li>
-         <li>Press ``I``</li>
+         <li>Press ``I`` (capital I using Shift key)</li>
          <li>Type in two spaces</li>
          <li>Press ``esc`` key</li>
          <li>Type ``wq!``</li>
@@ -719,7 +717,7 @@ In this section we will create our installation configuration files which will b
    ```bash
    vi manifests/cluster-proxy-01-config.yaml
    ```
-   ```yml {8} title="Match the following content"
+   ```yml {8} title="Add the user-ca-bundle as trusted CA"
    apiVersion: config.openshift.io/v1
    kind: Proxy
    metadata:
@@ -784,6 +782,7 @@ This will be simplest part of all, provided you have done everything correctly t
    xyz-6zlwh-master-2       Ready    master   14m   v1.24.0+b62823b
    xyz-6zlwh-worker-czbn7   Ready    worker   14m   v1.24.0+b62823b
    xyz-6zlwh-worker-njv66   Ready    worker   14m   v1.24.0+b62823b
+   xyz-6zlwh-worker-mlgbh   Ready    worker   14m   v1.24.0+b62823b
    ```
    Through the OCP GUI using kubeadmin credentials
 
@@ -798,3 +797,47 @@ This will be simplest part of all, provided you have done everything correctly t
    
    You have sucessfully installed OCP using IPI.
 
+## Cleanup (optional)
+
+Run through the following if you would like to delete the OCP cluster. This step is optional for HPOC as it resets at the  end of reservation.
+
+
+1. In your UserXX-LinuxToolsVM 
+
+2. Change to you working directory that we created before (if not there already)
+
+   ```bash
+   cd /root/xyz
+   ```
+
+3. Clean up with the following command:
+
+   ```bash
+   openshift-install destroy cluster 
+   ```
+
+   ```buttonless title="Output"
+   INFO Starting deletion of Nutanix infrastructure for Openshift cluster "xyz-6zlwh" 
+   INFO Virtual machines scheduled to be deleted:    
+   INFO - xyz-6zlwh-master-2                         
+   INFO - xyz-6zlwh-master-1                         
+   INFO - xyz-6zlwh-master-0                         
+   INFO - xyz-6zlwh-worker-qzslg                     
+   INFO - xyz-6zlwh-worker-xjfk9    
+   INFO - xyz-6zlwh-worker-mlgbh                 
+   INFO Deleting VM xyz-6zlwh-master-2 with ID d7d5f8ac-6190-4708-93d7-c065f24f658c 
+   INFO Deleting VM xyz-6zlwh-master-1 with ID 050dca81-be33-4b9f-9868-44853810ea99 
+   INFO Deleting VM xyz-6zlwh-master-0 with ID 13adfbae-3b22-443e-88e9-e8e58d2be78e 
+   INFO Deleting VM xyz-6zlwh-worker-qzslg with ID 93a3efc8-cdc6-4df9-a5d5-0ba420e033ab 
+   INFO Deleting VM xyz-6zlwh-worker-xjfk9 with ID 056f313e-b426-4ec3-a740-2c2ccd8e83ef
+   INFO Deleting VM xyz-6zlwh-worker-mlgbh with ID 056f313e-b426-4ef6-a740-2c2ccd8e83vc 
+   INFO Deleting image "xyz-6zlwh-rhcos" with UUID "3001064e-46ce-4f62-b8d3-116a24eedf55" 
+   INFO Deleting category value : shared             
+   INFO Deleting category value : owned              
+   INFO Deleting category key : kubernetes-io-cluster-xyz-6zlwh 
+   INFO Time elapsed: 32s   
+   ```
+   
+IPI installation method is simple and consistent to deploy as after the pre-rquisites are setup once. 
+
+Customers can easily deploy as many OCP clusters on Nutanix HCI. 

@@ -1,6 +1,8 @@
 ---
 title: "Provision Storage for Image Registry"
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 OCP comes with a in-built container image registry. The advantages of these container image registry are the following:
 
@@ -339,27 +341,19 @@ We will install a simple application to verify if the local OCP image registry i
 
 ## Image Registry Storage using Volumes PVC (Optional)
 
-In this lab we will create a persistent volume claim (PVC) and present it as storage to the running image registry on this OCP cluster. This
+In this section we will create a persistent volume claim (PVC) and present it as storage to the running image registry on this OCP cluster. This
 will be our first use case for Nutanix provided HCI storage.
 
 The PVC will be 100 GB.
+1.  Depending on the OCP cluster installation you chose, log on to the **UserXX-LinuxToolsVM** or **LB_DNS** VM to be able to access OCP cluster. 
 
-1.  In Calm go to your **Applications** > **Openshift ocp1**
+2.  Export the OCP cluster's KUBECONFIG file to environment so we can perform `oc` commands
 
-2.  Go to the **Services**
-
-3.  Select your **LB_DNS** service
-
-4.  Click on **Open Terminal**
-
-    ![](ocp_image_registry_images/ocp_lbdns_terminal.png)
-
-    The terminal will open in a new browser tab
-
-5.  Export the OCP cluster's KUBECONFIG file to environment so we can perform `oc` commands (if you haven't already)
-
-    ``` bash
+    ``` bash title="On NCM deployed OCP Clusters - use LB_DNS VM"
     export KUBECONFIG=~/openshift/auth/kubeconfig
+    ```
+    ``` bash title="On IPI deployed OCP Clusters - use UserXX-LinuxToolsVM"
+    export KUBECONFIG=/root/xyz/auth/kubeconfig 
     ```
 
 6.  Copy the following StorageClass configuration script and paste it in the command line window
