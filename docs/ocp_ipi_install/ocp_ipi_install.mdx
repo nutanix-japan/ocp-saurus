@@ -87,7 +87,6 @@ We will create the following minimum amount of resources:
 
 We will first find two IPs for OCP ``api`` and ``apps`` ingress endpoints in our network and add it to the **Primary** IPAM network blacklist. 
 
-
 1. Find the CIDR range for your  **Primary** IPAM network either from [RX](https://rx.corp.nutanix.com/) or from your instrutor
 
    ```buttonless title="CIDR example for your Nutanix cluster"
@@ -130,13 +129,18 @@ We will first find two IPs for OCP ``api`` and ``apps`` ingress endpoints in our
    ```bash
    acli net.add_to_ip_blacklist <your-ipam-ahv-network> ip_list=10.38.18.219,10.38.18.220
    ```
-   ```bash title="Sample command here"
+   ```bash title="Sample command"
    acli net.add_to_ip_blacklist Primary ip_list=10.38.18.219,10.38.18.220
    ```
 
 ### Add DNS Records
 
-In this section we will add PC, API and APPS Ingress DNS records for lookup by OCP IPI installer 
+In this section we will add PC, API and APPS Ingress DNS records for lookup by OCP IPI installer.
+
+Your OCP cluster's name becomes a subdomain in your DNS zone ``ntnxlab.local``. All OCP cluster related lookups are located within subdomain.
+
+- Main domain -  ``ntnxlab.local`` (this gets created with your HPOC reservation)
+  - Sub domain - ``xyz.ntnxlab.local`` (xyz is your OCP cluster's name)
 
 1. Logon to the AutoAD windows VM 
 
