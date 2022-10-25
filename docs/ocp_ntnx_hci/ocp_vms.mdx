@@ -25,9 +25,9 @@ In this section we will configure the environemnt for the OCP VM blueprint to ru
 -   Confirming OCP DNS endpoint for the services
 -   NICs are auto selected during execution
 
-:::info
+:::caution Are Calm endpoints setup?
 
-Calm automatically assigns endpoint to Calm Actions as endpoint is created in your previous lab section `endpoint`{.interpreted-textrole="ref"}. It is important to confirm end points for actions in the lab.
+Calm automatically assigns endpoint to Calm Actions as endpoint is created in your previous labs Calm endpoint section. It is important to confirm end points for actions in the lab.
 
 :::
 
@@ -41,9 +41,7 @@ Calm automatically assigns endpoint to Calm Actions as endpoint is created in yo
 
 2.  Click on **Credentials** (next to Save)
 
-3.  Copy the same **Private Key** that you generated from the previous
-    section `prov_vm`{.interpreted-text role="ref"} and paste the
-    generated primary key in the bluprints credential called **CRED**
+ 3.  Copy the same **Private Key** that you generated from the previous section and paste the generated primary key in the bluprints credential called **CRED**
 
     ![](ocp_vms_images/ocp_bp_save_cred.png)
 
@@ -111,7 +109,7 @@ Now we will check if OCP DNS endpoints are configured for the services.
     -   **OCP_BP** - name of the OCP_Master_Worker `blueprint2` that you
         uploaded (e.g. XYZ_OCP_Master_Worker)
 
-    :::warning
+    :::caution Check your subdomain/ocp cluster name?
    
     Make sure that the **OCP_SUBDOMAIN** name is be unique for each OCP cluster you deploy with this blueprint. A DNS zone is created based on this subdomain name.
 
@@ -125,15 +123,12 @@ Now we will check if OCP DNS endpoints are configured for the services.
 
 8.  Click on **Run**
 
-9.  Go to the **Audit** tab to check the stautus of the launched
-    **Deploy OCP** action
+9.  Go to the **Audit** tab to check the stautus of the launched **Deploy OCP** action
 
     ![](ocp_vms_images/ocp_deploy_audit.png)
 
 10. If this action launch is succesful, you will see another application
-    **Openshift xyz1** in the **Calm** \> **Applications** in a
-    **Provisioning** state (this might take up to 5 minutes to show up
-    in the Web UI)
+    **Openshift xyz1** in the **Calm** > **Applications** in a **Provisioning** state (this might take up to 5 minutes to show up in the Web UI)
 
     ![](ocp_vms_images/ocp_app_provisioning.png)
 
