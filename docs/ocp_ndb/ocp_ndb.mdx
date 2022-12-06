@@ -170,6 +170,64 @@ This way developers can easily integrate VM based databases in their regular mic
      password: password-for-ndb-server
    EOF
    ```
+3. Create a secret with credentials (password and ssh public key) for the new Postgres VM that you will be provisioning
+  
+   ```bash
+   cat << EOF | oc apply -f - 
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: your-db-secret
+   type: Opaque
+   stringData:
+     password: password-for-the-database-instance
+     ssh_public_key: SSH-PUBLIC-KEY # >> this must be present
+   EOF
+   ```
+4. Create a Database resource by using the following manifest
+
+   ```bash {12,18}
+   cat << EOF > ndb_database.yaml
+   apiVersion: ndb.nutanix.com/v1alpha1
+   kind: Database
+   metadata:
+     # This name that will be used within the kubernetes cluster
+     name: db
+   spec:
+   # NDB server specific details
+   ndb:
+     # Cluster id of the cluster where the Database has to be provisioned
+     # NDB cluster ID can be fetched from the GET /clusters endpoint
+     clusterId: "Nutanix Cluster Id"            # << This is NDB cluster ID
+     # Credentials secret name for NDB installation
+     # data: username, password, 
+     # stringData: ca_certificate
+     credentialSecret: your-ndb-secret
+     # The NDB Server
+     server: https://[NDB IP]:8443/era/v0.9     # << Change this to use your NDB server IP
+     # Set to true to skip SSL verification, default: false.
+     skipCertificateVerification: true
+     # Database instance specific details (that is to be provisioned)
+     databaseInstance:
+       # The database instance name on NDB
+       databaseInstanceName: "pgserver"
+       # Names of the databases on that instance
+       databaseNames:
+         - predictiondb 
+       # Credentials secret name for NDB installation
+       # data: password, ssh_public_key
+       credentialSecret: your-db-secret
+       size: 10
+       timezone: "UTC"
+       type: postgres
+   EOF
+   ```
+5. Edit the ``ndb_database.yaml`` file to populate with your environment details
+   
+   ```bash
+   vi ndb_database.yaml
+   ```
+
 
    
    
