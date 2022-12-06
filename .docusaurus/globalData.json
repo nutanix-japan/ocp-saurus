@@ -26,6 +26,11 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "ocp_ndb/ocp_ndb",
+              "path": "/ocp_ndb/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "ocp_ntnx_hci/import_bp",
               "path": "/ocp_ntnx_hci/import_bp",
               "sidebar": "tutorialSidebar"

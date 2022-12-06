@@ -97,6 +97,32 @@
               }
             },
             {
+              "unversionedId": "ocp_ndb/ocp_ndb",
+              "id": "ocp_ndb/ocp_ndb",
+              "title": "OCP and Nutanix NDB",
+              "description": "In this lab we will setup custom application with Nutanix Database NDB service.",
+              "source": "@site/docs/ocp_ndb/ocp_ndb.mdx",
+              "sourceDirName": "ocp_ndb",
+              "slug": "/ocp_ndb/",
+              "permalink": "/ocp_ndb/",
+              "draft": false,
+              "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ndb/ocp_ndb.mdx",
+              "tags": [],
+              "version": "current",
+              "frontMatter": {
+                "title": "OCP and Nutanix NDB"
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "OCP: Deploying IDP for OCP",
+                "permalink": "/optional_labs/ocp_idp"
+              },
+              "next": {
+                "title": "Linux Tools VM",
+                "permalink": "/toolsvms/linux_tools_vm"
+              }
+            },
+            {
               "unversionedId": "ocp_ntnx_hci/import_bp",
               "id": "ocp_ntnx_hci/import_bp",
               "title": "Architecture and Initial Setup",
@@ -284,8 +310,8 @@
                 "permalink": "/optional_labs/ocp_vms_2"
               },
               "next": {
-                "title": "Linux Tools VM",
-                "permalink": "/toolsvms/linux_tools_vm"
+                "title": "OCP and Nutanix NDB",
+                "permalink": "/ocp_ndb/"
               }
             },
             {
@@ -360,8 +386,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP: Deploying IDP for OCP",
-                "permalink": "/optional_labs/ocp_idp"
+                "title": "OCP and Nutanix NDB",
+                "permalink": "/ocp_ndb/"
               },
               "next": {
                 "title": "Windows Tools VM",
@@ -583,6 +609,18 @@
                   {
                     "type": "doc",
                     "id": "optional_labs/ocp_idp"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "category",
+                "label": "OCP and Nutanix NDB",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "ocp_ndb/ocp_ndb"
                   }
                 ],
                 "collapsed": true,

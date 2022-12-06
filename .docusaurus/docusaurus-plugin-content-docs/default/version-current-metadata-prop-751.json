@@ -149,6 +149,20 @@
       },
       {
         "type": "category",
+        "label": "OCP and Nutanix NDB",
+        "items": [
+          {
+            "type": "link",
+            "label": "OCP and Nutanix NDB",
+            "href": "/ocp_ndb/",
+            "docId": "ocp_ndb/ocp_ndb"
+          }
+        ],
+        "collapsed": true,
+        "collapsible": true
+      },
+      {
+        "type": "category",
         "label": "Tools VMs",
         "items": [
           {
@@ -186,6 +200,12 @@
       "id": "ocp_ipi_install/ocp_ipi_install",
       "title": "OCP: IPI Installation",
       "description": "OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives customer a intutive and easy way to deploy OCP cluster on Nutanix AOS.",
+      "sidebar": "tutorialSidebar"
+    },
+    "ocp_ndb/ocp_ndb": {
+      "id": "ocp_ndb/ocp_ndb",
+      "title": "OCP and Nutanix NDB",
+      "description": "In this lab we will setup custom application with Nutanix Database NDB service.",
       "sidebar": "tutorialSidebar"
     },
     "ocp_ntnx_hci/import_bp": {

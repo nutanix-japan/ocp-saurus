@@ -99,7 +99,7 @@ export default [
   },
   {
     path: '/',
-    component: ComponentCreator('/', '445'),
+    component: ComponentCreator('/', '2d8'),
     routes: [
       {
         path: '/',
@@ -116,6 +116,12 @@ export default [
       {
         path: '/ocp_ipi_install/',
         component: ComponentCreator('/ocp_ipi_install/', '8ed'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/ocp_ndb/',
+        component: ComponentCreator('/ocp_ndb/', '91c'),
         exact: true,
         sidebar: "tutorialSidebar"
       },

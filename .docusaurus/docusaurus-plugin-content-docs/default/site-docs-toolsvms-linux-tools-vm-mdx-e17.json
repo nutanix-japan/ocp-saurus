@@ -18,8 +18,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "OCP: Deploying IDP for OCP",
-    "permalink": "/optional_labs/ocp_idp"
+    "title": "OCP and Nutanix NDB",
+    "permalink": "/ocp_ndb/"
   },
   "next": {
     "title": "Windows Tools VM",

@@ -33,6 +33,11 @@ module.exports = {
     },
     {
       type: 'category',
+      label: 'OCP and Nutanix NDB',
+      items: ['ocp_ndb/ocp_ndb'],
+    },
+    {
+      type: 'category',
       label: 'Tools VMs',
       items: ['toolsvms/linux_tools_vm','toolsvms/windows_tools_vm'],
     },

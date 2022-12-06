@@ -186,7 +186,7 @@
     },
     "content": "content---markdown-page-393-028"
   },
-  "/-445": {
+  "/-2d8": {
     "__comp": "__comp---theme-doc-page-1-be-9be",
     "__context": {
       "plugin": "plugin---e-08-402"
@@ -204,6 +204,10 @@
   "/ocp_ipi_install/-8ed": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---ocp-ipi-install-cc-8-059"
+  },
+  "/ocp_ndb/-91c": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---ocp-ndb-463-8a2"
   },
   "/ocp_ntnx_hci/import_bp-fbc": {
     "__comp": "__comp---theme-doc-item-178-a40",
