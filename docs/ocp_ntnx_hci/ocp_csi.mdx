@@ -198,7 +198,7 @@ Nutanix CSI can be installed using ``helm`` charts as well as you would do in an
       csi.storage.k8s.io/controller-expand-secret-name: ntnx-secret
       csi.storage.k8s.io/controller-expand-secret-namespace: openshift-cluster-csi-drivers
       csi.storage.k8s.io/fstype: ext4
-      storageContainer: default ## << Change this to match your Storage Container
+      storageContainer: Default           ## << Change this to match your Storage Container
       storageType: NutanixVolumes
       isLVMVolume: "true"
       numLVMDisks: "4"
@@ -239,6 +239,45 @@ Nutanix CSI can be installed using ``helm`` charts as well as you would do in an
     nutanix-volumes(default)   csi.nutanix.com   Delete          Immediate           true                   4m
     ```
 
+10. Create a machine config to make sure iSCSI service starts in worker and master nodes. 
+
+    ```bash title="Start iSCSI service for worker nodes"
+    cat << EOF | oc apply -f -
+    apiVersion: machineconfiguration.openshift.io/v1
+    kind: MachineConfig
+    metadata:
+      labels:
+        machineconfiguration.openshift.io/role: worker
+      name: 99-worker-custom-enable-iscsid
+    spec:
+      config:
+        ignition:
+          version: 3.1.0
+      systemd:
+        units:
+         - enabled: true
+           name: iscsid.service
+    EOF
+    ```
+
+    ```bash title="Optional - Start iSCSI service for masters nodes"
+    cat << EOF | oc apply -f -
+    apiVersion: machineconfiguration.openshift.io/v1
+    kind: MachineConfig
+    metadata:
+      labels:
+        machineconfiguration.openshift.io/role: master
+      name: 99-master-custom-enable-iscsid
+    spec:
+      config:
+        ignition:
+          version: 3.1.0
+      systemd:
+        units:
+         - enabled: true
+           name: iscsid.service
+    EOF
+    ```
 
 We have sucessfully installed Nutanix StorageClass so we can provision Physical Volumes (PV) and Physical Volume Claims (PVC) for the applications we will be deploying in this OCP cluster.
 

@@ -119,7 +119,7 @@ This way developers can easily integrate VM based databases in their regular mic
    go version
    ```
    ```bash title="Install build tools"
-   sudo yum groupinstall "Development Tools"
+   yum groupinstall "Development Tools"
    ```
    
 6. Install the NDB Operator/Controller on OCP
@@ -159,7 +159,7 @@ This way developers can easily integrate VM based databases in their regular mic
 2. Create a secret to access NDB server
 
    ```bash
-   cat << EOF | oc apply -f - 
+   cat << EOF > your-ndb-secret.yaml
    apiVersion: v1
    kind: Secret
    metadata:
@@ -170,10 +170,14 @@ This way developers can easily integrate VM based databases in their regular mic
      password: password-for-ndb-server
    EOF
    ```
+   ```bash title="Edit the manifest and apply it"
+   vi your-ndb-secret.yaml
+   oc apply -f your-ndb-secret.yaml
+   ```
 3. Create a secret with credentials (password and ssh public key) for the new Postgres VM that you will be provisioning
   
    ```bash
-   cat << EOF | oc apply -f - 
+   cat << EOF > your-db-secret.yaml
    apiVersion: v1
    kind: Secret
    metadata:
@@ -184,9 +188,36 @@ This way developers can easily integrate VM based databases in their regular mic
      ssh_public_key: SSH-PUBLIC-KEY # >> this must be present
    EOF
    ```
+   ```bash title="Edit the manifest and apply it"
+   vi your-db-secret.yaml
+   oc apply -f your-db-secret.yaml
+   ```
+
+4. We need to get the NDB server's cluster UUID to use in the next step; to facilitate this, logon to your NDB VM UI with the following credentials
+
+   - **username** - admin
+   - **password** - from your HPOC reservation
+5. On the top right-hand corner, click on **admin** user name and select **REST API Explorer**
+
+6. This will open a new browser tab
+
+7. In the browser tab, scroll to the bottom to see **Clusters**
+
+8. Expand the first GET / clusters API call and click on **Try it out**
+
+   ![](images/tryitout.png)
+
+9. Click on **Execute**
+
+   ![](images/execute.png)
+
+10. Copy the uuid shown here 
+
+   ![](images/response.png)
+
 4. Create a Database resource by using the following manifest
 
-   ```bash {12,18}
+   ```bash {12,18,24,27}
    cat << EOF > ndb_database.yaml
    apiVersion: ndb.nutanix.com/v1alpha1
    kind: Database
@@ -194,32 +225,32 @@ This way developers can easily integrate VM based databases in their regular mic
      # This name that will be used within the kubernetes cluster
      name: db
    spec:
-   # NDB server specific details
-   ndb:
-     # Cluster id of the cluster where the Database has to be provisioned
-     # NDB cluster ID can be fetched from the GET /clusters endpoint
-     clusterId: "Nutanix Cluster Id"            # << This is NDB cluster ID
-     # Credentials secret name for NDB installation
-     # data: username, password, 
-     # stringData: ca_certificate
-     credentialSecret: your-ndb-secret
-     # The NDB Server
-     server: https://[NDB IP]:8443/era/v0.9     # << Change this to use your NDB server IP
-     # Set to true to skip SSL verification, default: false.
-     skipCertificateVerification: true
-     # Database instance specific details (that is to be provisioned)
-     databaseInstance:
-       # The database instance name on NDB
-       databaseInstanceName: "pgserver"
-       # Names of the databases on that instance
-       databaseNames:
-         - predictiondb 
+     # NDB server specific details
+     ndb:
+       # Cluster id of the cluster where the Database has to be provisioned
+       # NDB cluster ID can be fetched from the GET /clusters endpoint
+       clusterId: "b46cdb17-4731-47ac-a986-839ca4506909"    # << NDB cluster ID from previous step
        # Credentials secret name for NDB installation
-       # data: password, ssh_public_key
-       credentialSecret: your-db-secret
-       size: 10
-       timezone: "UTC"
-       type: postgres
+       # data: username, password, 
+       # stringData: ca_certificate
+       credentialSecret: your-ndb-secret
+       # The NDB Server
+       server: https://[NDB IP]:8443/era/v0.9               # << Change this to use your NDB server IP
+       # Set to true to skip SSL verification, default: false.
+       skipCertificateVerification: true
+      # Database instance specific details (that is to be provisioned)
+      databaseInstance:
+        # The database instance name on NDB
+        databaseInstanceName: "pgserver"                  # << Create a new Postgres server
+        # Names of the databases on that instance
+        databaseNames:
+        - predictiondb                                  # <<  Create a new database 
+        # Credentials secret name for NDB installation
+        # data: password, ssh_public_key
+        credentialSecret: your-db-secret
+        size: 10
+        timezone: "UTC"
+        type: postgres
    EOF
    ```
 5. Edit the ``ndb_database.yaml`` file to populate with your environment details

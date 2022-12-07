@@ -50,11 +50,16 @@ We will test backup and recovery of this application in next section.
     wget https://raw.githubusercontent.com/nutanix-japan/ocp-hci/main/ocp_wordpress_deploy/mysql_deployment.yaml
     wget https://raw.githubusercontent.com/nutanix-japan/ocp-hci/main/ocp_wordpress_deploy/wordpress_deployment.yaml 
     ```
-
+9.  Testing has indicated that wordpress container expects to run as root in terms of security context. To enable the ``default`` service account in the ``wordpress`` namespace to run as root, we need to grant ``anyuid`` security context to the service account.
+    
+    ```bash
+    oc adm policy add-scc-to-user anyuid -z default
+    ```
+    
 9.  Make sure the nutanix-volume is the default storage class
 
     ``` bash
-    oc patch storageclass nutanix-volume -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+    oc patch storageclass nutanix-volumes -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
     oc get sc
     ```
 
@@ -72,8 +77,7 @@ We will test backup and recovery of this application in next section.
     EOF
     ```
 
-11. Edit the kustomization.yaml to change your MYSQL password to a
-    preferred password
+11. Edit the kustomization.yaml to change your MYSQL password to a preferred password
 
     ``` bash
     vi kustomization.yaml
