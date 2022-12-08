@@ -223,41 +223,65 @@ This way developers can easily integrate VM based databases in their regular mic
    kind: Database
    metadata:
      # This name that will be used within the kubernetes cluster
-     name: db
+     name: dbforflower
    spec:
      # NDB server specific details
      ndb:
        # Cluster id of the cluster where the Database has to be provisioned
-       # NDB cluster ID can be fetched from the GET /clusters endpoint
-       clusterId: "b46cdb17-4731-47ac-a986-839ca4506909"    # << NDB cluster ID from previous step
+       # Can be fetched from the GET /clusters endpoint
+       clusterId: "a4cfc2cc-bd00-4cc6-95bd-5f714196db96" 
        # Credentials secret name for NDB installation
        # data: username, password, 
        # stringData: ca_certificate
        credentialSecret: your-ndb-secret
        # The NDB Server
-       server: https://[NDB IP]:8443/era/v0.9               # << Change this to use your NDB server IP
+       server: https://10.38.7.119:8443/era/v0.9
        # Set to true to skip SSL verification, default: false.
        skipCertificateVerification: true
-      # Database instance specific details (that is to be provisioned)
-      databaseInstance:
-        # The database instance name on NDB
-        databaseInstanceName: "pgserver"                  # << Create a new Postgres server
-        # Names of the databases on that instance
-        databaseNames:
-        - predictiondb                                  # <<  Create a new database 
-        # Credentials secret name for NDB installation
-        # data: password, ssh_public_key
-        credentialSecret: your-db-secret
-        size: 10
-        timezone: "UTC"
-        type: postgres
+     # Database instance specific details (that is to be provisioned)
+     databaseInstance:
+       # The database instance name on NDB
+       databaseInstanceName: "pgserver"
+       # Names of the databases on that instance
+       databaseNames:
+         - predictiondb
+       # Credentials secret name for NDB installation
+       # data: password, ssh_public_key
+       credentialSecret: your-db-secret
+       size: 10
+       timezone: "UTC"
+       type: postgres
    EOF
    ```
+
 5. Edit the ``ndb_database.yaml`` file to populate with your environment details
    
    ```bash
    vi ndb_database.yaml
    ```
+
+6. Create the NDB database
+   
+   ```bash
+   oc apply -f ndb_database.yaml
+   ```
+
+7. Check the status of the deployment
+
+   ```bash
+   oc get database 
+   ```
+   ```text title="Output - you will see provisioning status"
+   NAME          IP ADDRESS    STATUS           DATABASE INSTANCE ID                   DATABASE SERVER ID
+   dbforflower      PROVISIONING
+   ```  
+8. You can also track the progress of the database deployment by looking at the ``ndb-operator-controller-manager`` pod logs in ``ndb-operator-system`` namespace
+
+   ```bash title="The pod name will be different for you"
+   ocp logs pod/ndb-operator-controller-manager-56d475b4cc-7l9m -n ndb-operator-system -f
+   ```
+
+9. 
 
 
    
