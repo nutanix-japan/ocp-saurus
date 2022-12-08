@@ -277,11 +277,15 @@ This way developers can easily integrate VM based databases in their regular mic
    ```  
 8. You can also track the progress of the database deployment by looking at the ``ndb-operator-controller-manager`` pod logs in ``ndb-operator-system`` namespace
 
-   ```bash title="The pod name will be different for you"
+   ```bash title="Make sure to use your pod name"
    ocp logs pod/ndb-operator-controller-manager-56d475b4cc-7l9m -n ndb-operator-system -f
    ```
 
-9. 
+9. You can also login to the NDB web page to see the progress. 
+   
+   In NDB UI, Select **Menu** **Operations**
+
+   ![](images/ndbprogress.png)
 
 
    
