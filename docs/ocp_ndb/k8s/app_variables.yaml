@@ -17,8 +17,8 @@ data:
   
   #db server components
   DATABASE: postgres
-  DB_ENGINE: "django.db.backends.postgresql"  #change this
+  DB_ENGINE: "django.db.backends.postgresql"  
   DB_DATABASE: predictiondb
-  DB_USER: postgres                           #change this
-  DB_HOST: service/dbforflower-svc            #change this
-  DB_PORT: "80"                               #change this
+  DB_USER: postgres                           
+  DB_HOST: dbforflower-svc                    #This is your your database service
+  DB_PORT: "80"                               #This is your database service's port 

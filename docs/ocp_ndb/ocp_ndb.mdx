@@ -388,6 +388,102 @@ This way developers can easily integrate VM based databases in their regular mic
 
 ## Installing a Custom Application 
 
-###
+1. Apply the following create application secrets and variables (configmap)
+   
+   ```bash
+   oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_secrets.yaml
+   oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_variables.yaml
+   oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/job_django.yaml
+   ```
 
+2. Monitor the job to make sure it has completed
+   
+   ```bash
+   oc get job django-job -w
+   ```
+   ```bash title="Output"
+   # oc get job -w
+   NAME         COMPLETIONS   DURATION   AGE
+   django-job   0/1           14s        15s
+   django-job   0/1           14s        15s
+   django-job   0/1           17s        18s
+   django-job   1/1           19s        20s   # << Wait for completion
+   ```
+   
+3. You can analyse the logs to make sure the job has completed without any issues
+
+   ```bash title="Analyse the pod logs"
+   oc logs django-job-cmcxk
+   ```
+   ```bash title="You must see migration jobs runnig - ignore warnings"
+   Running migrations:
+   Applying contenttypes.0001_initial... OK
+   Applying auth.0001_initial... OK
+   Applying admin.0001_initial... OK
+   Applying admin.0002_logentry_remove_auto_add... OK
+   Applying admin.0003_logentry_add_action_flag_choices... OK
+   Applying contenttypes.0002_remove_content_type_name... OK
+   Applying auth.0002_alter_permission_name_max_length... OK
+   Applying auth.0003_alter_user_email_max_length... OK
+   Applying auth.0004_alter_user_username_opts... OK
+   Applying auth.0005_alter_user_last_login_null... OK
+   Applying auth.0006_require_contenttypes_0002... OK
+   Applying auth.0007_alter_validators_add_error_messages... OK
+   Applying auth.0008_alter_user_username_max_length... OK
+   Applying auth.0009_alter_user_last_name_max_length... OK
+   Applying auth.0010_alter_group_name_max_length... OK
+   Applying auth.0011_update_proxy_permissions... OK
+   Applying auth.0012_alter_user_first_name_max_length... OK
+   Applying authtoken.0001_initial... OK
+   Applying authtoken.0002_auto_20160226_1747... OK
+   Applying sessions.0001_initial... OK
+   ```
+
+   :::tip what if my job fails?
+   You would have to delete your job, change references in **app_variables** config map, and re-run it
+
+   ```bash
+   oc delete -f job_django.yaml
+   oc apply -f job_django
+   ```
+
+4. Log back into the database to check if there are new tables 
+   
+    ```bash title="Login to the pod and connect to database server"
+    oc exec -it psql -- /bin/sh
+    ```
+    ```bash title="Inside the Postgres pod, logon to the predictiondb database"
+    psql -h dbforflower-svc -p 80 -U postgres -d predictiondb
+    ```
+
+    ```bash title="Enter postgres_password as the password"
+    # psql -h dbforflower-svc -p 80 -U postgres -d predictiondb
+    Password for user postgres: 
+    psql (9.4.5, server 10.4)
+    WARNING: psql major version 9.4, server major version 10.4.
+             Some psql features might not work.
+    Type "help" for help.
+    
+    predictiondb=#
+    ```
+    ```bash title="You should see 11 tables created"
+    predictiondb=# \dt
+                   List of relations
+     Schema |            Name            | Type  |  Owner   
+    --------+----------------------------+-------+----------
+     public | auth_group                 | table | postgres
+     public | auth_group_permissions     | table | postgres
+     public | auth_permission            | table | postgres
+     public | auth_user                  | table | postgres
+     public | auth_user_groups           | table | postgres
+     public | auth_user_user_permissions | table | postgres
+     public | authtoken_token            | table | postgres
+     public | django_admin_log           | table | postgres
+     public | django_content_type        | table | postgres
+     public | django_migrations          | table | postgres
+     public | django_session             | table | postgres
+    (11 rows)
+    ```
+
+  
 
