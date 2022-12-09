@@ -19,6 +19,6 @@ data:
   DATABASE: postgres
   DB_ENGINE: "django.db.backends.postgresql"  #change this
   DB_DATABASE: predictiondb
-  DB_USER: postgres                     #change this
-  DB_HOST: postgres-cluster-ip-service        #change this
-  DB_PORT: "80"
+  DB_USER: postgres                           #change this
+  DB_HOST: service/dbforflower-svc            #change this
+  DB_PORT: "80"                               #change this
