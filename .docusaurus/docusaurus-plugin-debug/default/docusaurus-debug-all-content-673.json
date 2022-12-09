@@ -97,6 +97,21 @@
               }
             },
             {
+              "unversionedId": "ocp_ndb/mdx",
+              "id": "ocp_ndb/mdx",
+              "title": "mdx",
+              "description": "",
+              "source": "@site/docs/ocp_ndb/mdx.mdx",
+              "sourceDirName": "ocp_ndb",
+              "slug": "/ocp_ndb/mdx",
+              "permalink": "/ocp_ndb/mdx",
+              "draft": false,
+              "editUrl": "https://github.com/nutanix-japan/ocp-saurus/edit/main/docs/ocp_ndb/mdx.mdx",
+              "tags": [],
+              "version": "current",
+              "frontMatter": {}
+            },
+            {
               "unversionedId": "ocp_ndb/ocp_ndb",
               "id": "ocp_ndb/ocp_ndb",
               "title": "OCP and Nutanix NDB",

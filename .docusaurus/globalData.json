@@ -26,6 +26,10 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "ocp_ndb/mdx",
+              "path": "/ocp_ndb/mdx"
+            },
+            {
               "id": "ocp_ndb/ocp_ndb",
               "path": "/ocp_ndb/",
               "sidebar": "tutorialSidebar"

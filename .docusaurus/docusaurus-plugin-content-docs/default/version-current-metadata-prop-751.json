@@ -202,6 +202,11 @@
       "description": "OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives customer a intutive and easy way to deploy OCP cluster on Nutanix AOS.",
       "sidebar": "tutorialSidebar"
     },
+    "ocp_ndb/mdx": {
+      "id": "ocp_ndb/mdx",
+      "title": "mdx",
+      "description": ""
+    },
     "ocp_ndb/ocp_ndb": {
       "id": "ocp_ndb/ocp_ndb",
       "title": "OCP and Nutanix NDB",

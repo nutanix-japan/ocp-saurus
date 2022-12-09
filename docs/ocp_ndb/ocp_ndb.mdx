@@ -51,6 +51,7 @@ In this section we will install NDB operator and use yaml files to provision a d
 
 This way developers can easily integrate VM based databases in their regular microservices based workflow.
 
+### Prepare you Linux Tools VM
 
 1. Logon to your Linux Tools VM using root user name and password
 
@@ -96,7 +97,7 @@ This way developers can easily integrate VM based databases in their regular mic
 
    :::caution Go version?
 
-   At the time of writing this lab Go was 1.19.3. 
+   At the time of writing this lab Go was 1.18.8 
 
    Make sure to download the stable version from [here](https://go.dev/doc/install).
    :::
@@ -121,8 +122,10 @@ This way developers can easily integrate VM based databases in their regular mic
    ```bash title="Install build tools"
    yum groupinstall "Development Tools"
    ```
-   
-6. Install the NDB Operator/Controller on OCP
+
+### Install the NDB Operator for OCP
+
+1. Install the NDB Operator/Controller on OCP
 
     ```bash
     make deploy
@@ -150,6 +153,8 @@ This way developers can easily integrate VM based databases in their regular mic
 
 ## Create NDB Postgres DB 
 
+### Prepare Secrets for your Database
+
 1. Create a new OCP project
    
    ```bash
@@ -174,6 +179,11 @@ This way developers can easily integrate VM based databases in their regular mic
    vi your-ndb-secret.yaml
    oc apply -f your-ndb-secret.yaml
    ```
+   ```bash title="Edit the manifest and apply it"
+   vi your-db-secret.yaml
+   oc apply -f your-db-secret.yaml
+   ```
+   
 3. Create a secret with credentials (password and ssh public key) for the new Postgres VM that you will be provisioning
   
    ```bash
@@ -188,10 +198,32 @@ This way developers can easily integrate VM based databases in their regular mic
      ssh_public_key: SSH-PUBLIC-KEY # >> this must be present
    EOF
    ```
-   ```bash title="Edit the manifest and apply it"
-   vi your-db-secret.yaml
-   oc apply -f your-db-secret.yaml
+   ```mdx-code-block
+   <BrowserWindow>
+   <details>
+   <summary>No SSH-PUBLIC-KEY?</summary>
+   <div>
+   <body>
+
+   :::tip 
+
+   If you do not have a **SSH-PUBLIC-KEY**, use the ``ssh-keygen`` command on your **Linux Tools VM** to create a ssh key pair
+
+   Remember to keep it safe somewhere. 
+
+   ```bash
+   ssh-keygen -t rsa -b 2048 -f ~/.ssh/for_ndb   # << accept all default answers
+   ls -l ~/.ssh/
+   ## Output here
+   ~/.ssh/for_ndb.pub  # << use this public key in the your-db-secret manifest 
+   ~/.ssh/for_ndb      # << use this private key to logon to the NDB deployed database server
    ```
+   </body>
+   </div>
+   </details>
+   </BrowserWindow>
+   
+### Get NDB Cluster's UUID
 
 4. We need to get the NDB server's cluster UUID to use in the next step; to facilitate this, logon to your NDB VM UI with the following credentials
 
@@ -215,36 +247,40 @@ This way developers can easily integrate VM based databases in their regular mic
 
    ![](images/response.png)
 
-4. Create a Database resource by using the following manifest
+### Create Postgres Database using the NDB Operator
 
-   ```bash {12,18,24,27}
-   cat << EOF > ndb_database.yaml
+1. Create a Database resource by using the following manifest
+
+   ```bash {12,18,24,26,29}
+   cat << EOF > ndb.yaml
    apiVersion: ndb.nutanix.com/v1alpha1
    kind: Database
    metadata:
      # This name that will be used within the kubernetes cluster
-     name: dbforflower
+     name: ndb4
    spec:
      # NDB server specific details
      ndb:
        # Cluster id of the cluster where the Database has to be provisioned
-       # Can be fetched from the GET /clusters endpoint
-       clusterId: "a4cfc2cc-bd00-4cc6-95bd-5f714196db96" 
+       # Can be fetched from the NDB server's GET /clusters endpoint
+       clusterId: "a4cfc2cc-bd00-4cc6-95bd-5f714196db96"   # << NDB server's cluster UUID
        # Credentials secret name for NDB installation
        # data: username, password, 
        # stringData: ca_certificate
        credentialSecret: your-ndb-secret
        # The NDB Server
-       server: https://10.38.7.119:8443/era/v0.9
+       server: https://[NDB IP]:8443/era/v0.9              # << Use NDB server's IP
+       # Example URL below
+       # server: https://10.38.7.119:8443/era/v0.9         # << this is NDB URL example
        # Set to true to skip SSL verification, default: false.
        skipCertificateVerification: true
      # Database instance specific details (that is to be provisioned)
      databaseInstance:
        # The database instance name on NDB
-       databaseInstanceName: "pgserver"
+       databaseInstanceName: "pgserver"                   # << this will be our databse server name
        # Names of the databases on that instance
        databaseNames:
-         - predictiondb
+         - predictiondb                                   # << this will be our databse name
        # Credentials secret name for NDB installation
        # data: password, ssh_public_key
        credentialSecret: your-db-secret
@@ -254,16 +290,16 @@ This way developers can easily integrate VM based databases in their regular mic
    EOF
    ```
 
-5. Edit the ``ndb_database.yaml`` file to populate with your environment details
+5. Edit the ``ndb.yaml`` file to populate with your environment details
    
    ```bash
-   vi ndb_database.yaml
+   vi ndb.yaml
    ```
 
 6. Create the NDB database
    
    ```bash
-   oc apply -f ndb_database.yaml
+   oc apply -f ndb.yaml
    ```
 
 7. Check the status of the deployment
@@ -272,8 +308,8 @@ This way developers can easily integrate VM based databases in their regular mic
    oc get database 
    ```
    ```text title="Output - you will see provisioning status"
-   NAME          IP ADDRESS    STATUS           DATABASE INSTANCE ID                   DATABASE SERVER ID
-   dbforflower      PROVISIONING
+   NAME          IP ADDRESS    STATUS               DATABASE INSTANCE ID                   DATABASE SERVER ID
+   dbforflower                 PROVISIONING         3f04f1f0-36bf-483a-96e6-ccc3c1384c68
    ```  
 8. You can also track the progress of the database deployment by looking at the ``ndb-operator-controller-manager`` pod logs in ``ndb-operator-system`` namespace
 
@@ -287,6 +323,71 @@ This way developers can easily integrate VM based databases in their regular mic
 
    ![](images/ndbprogress.png)
 
+10. It will take about 20 minutes to provision the database server, once done, check the status in OCP
+    
+    ```bash
+    oc get database 
+    ```
+    ```text title="Output - note the READY status and the IP address of the database VM"
+    NAME          IP ADDRESS    STATUS   DATABASE INSTANCE ID                   DATABASE SERVER ID
+    dbforflower   10.38.7.115   READY    3f04f1f0-36bf-483a-96e6-ccc3c1384c68   65e26459-2ebc-40e4-9111-4d02f556fdb8
+    ```
 
-   
-   
+11. NDB Operator also creates a service and an endpoint for you to access the database server 
+    
+    ```bash
+    oc get service, ep 
+    ```
+    ```text title="Output - note the Cluster IP, endpoint's external IP and port number"
+    NAME                        TYPE                CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+    service/dbforflower-svc     ClusterIP           172.30.38.131    <none>        80/TCP    20m
+
+    NAME                        ENDPOINTS           AGE    
+    endpoints/dbforflower-svc   10.38.7.115:5432    20m                                   
+    ```
+    The database is now available as an ClusterIP service to other workloads.
+
+    Now we just need to use the cluster IP of the database service to the connect the front end application.
+
+12. Check if you are able to connect to you database. We will do this by deploying a standalone postgres pod.
+
+    ```bash title="Deploy the Postgres pod"
+    oc run --restart=Never psql --image=quay.io/coreos/postgres --env=POSTGRES_PASSWORD=postgres_password
+    ```
+    ```bash title="Login to the pod and connect to database server"
+    oc exec -it psql -- /bin/sh
+    ```
+    ```bash title="Inside the Postgres pod, logon to the predictiondb database"
+    psql -h dbforflower-svc -p 80 -U postgres -d predictiondb
+    ```
+
+    ```bash title="Enter postgres_password as the password"
+    # psql -h dbforflower-svc -p 80 -U postgres -d predictiondb
+    Password for user postgres: 
+    psql (9.4.5, server 10.4)
+    WARNING: psql major version 9.4, server major version 10.4.
+             Some psql features might not work.
+    Type "help" for help.
+    
+    predictiondb=#
+    ```
+    ```bash title="Run \du command to list the users"
+    predictiondb=# \du 
+                                                            List of roles
+      Role name       |                   Attributes                   |                          Member of                           
+    ----------------------+------------------------------------------------+--------------------------------------------------------------
+    pg_monitor           | Cannot login                                   | {pg_read_all_settings,pg_read_all_stats,pg_stat_scan_tables}
+    pg_read_all_settings | Cannot login                                   | {}
+    pg_read_all_stats    | Cannot login                                   | {}
+    pg_signal_backend    | Cannot login                                   | {}
+    pg_stat_scan_tables  | Cannot login                                   | {}
+    postgres             | Superuser, Create role, Create DB, Replication | {}
+    ```
+
+13. You are able to connect to the database without leaving the OCP environment
+
+## Installing a Custom Application 
+
+###
+
+
