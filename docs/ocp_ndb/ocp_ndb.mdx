@@ -388,11 +388,65 @@ This way developers can easily integrate VM based databases in their regular mic
 
 ## Installing a Custom Application 
 
+### Create Database Schema and Data
+
 1. Apply the following create application secrets and variables (configmap)
    
    ```bash
    oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_secrets.yaml
    oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_variables.yaml
+   ```
+   ```mdx-code-block
+   <BrowserWindow>
+   <details>
+   <summary>Curious about the configmap?</summary>
+   <div>
+   <body>
+
+   :::info 
+
+   You can download the ``app_variables.yaml`` manifest to check what the database connection parameters are
+
+   You could use this manifest to change your database connection parameters if they are different
+
+   ```bash
+   wget https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_variables.yaml
+   #
+   cat app_variables.yaml
+   ## Output here
+   apiVersion: v1
+   kind: ConfigMap
+   metadata:
+     name: app-variables
+   data:
+     #env variables for the postgres component
+     POSTGRES_USER: postgres_user
+     POSTGRES_DB: predictiondb
+   
+     #env variables for the backend component
+     DJANGO_ENV: development
+     DEBUG: "1"
+     SECRET_KEY: secretsecretsecretsecretsecret
+     DJANGO_ALLOWED_HOSTS: "*"
+     DJANGO_ADMIN_USER: admin
+     DJANGO_ADMIN_EMAIL: "admin@example.com"
+     
+     #db server components
+     DATABASE: postgres
+     DB_ENGINE: "django.db.backends.postgresql"  
+     DB_DATABASE: predictiondb
+     DB_USER: postgres                           
+     DB_HOST: dbforflower-svc                    #  << This is your your database service
+     DB_PORT: "80"                               #  << This is your database service's port 
+   ```
+   </body>
+   </div>
+   </details>
+   </BrowserWindow>
+
+2. Run a job to populate your database with schema and data
+   
+   ```bash
    oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/job_django.yaml
    ```
 
@@ -484,6 +538,42 @@ This way developers can easily integrate VM based databases in their regular mic
      public | django_session             | table | postgres
     (11 rows)
     ```
+### Install Front End and Back End applications
+
+1. Run the following commands to create the front end and back end applications 
+
+   ```bash
+   oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/component_django.yaml
+   oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/component_react.yaml
+   ```
+   ```bash title="Output - you will see deployments and services created"
+   deployment.apps/django-deployment created
+   service/django-cluster-ip-service created
+   #
+   deployment.apps/react-deployment created
+   service/react-cluster-ip-service created
+   ```
+2. Make sure all the pods are running 
+   
+   ```bash title="Make sure all pods are running"
+   oc get po 
+   ```
+   ```bash title="Output"
+   oc get po 
+   NAME                                 READY   STATUS      RESTARTS   AGE
+   django-deployment-5b96897c59-cqhmp   1/1     Running     0          2m15s
+   django-deployment-5b96897c59-m927z   1/1     Running     0          2m15s
+   django-deployment-5b96897c59-nw85m   1/1     Running     0          2m15s
+   django-job-sbctr                     0/1     Completed   0          28m
+   psql                                 1/1     Running     0          114m
+   react-deployment-cdff5fdbf-28mnq     1/1     Running     0          2m13s
+   react-deployment-cdff5fdbf-5dhm5     1/1     Running     0          2m13s
+   react-deployment-cdff5fdbf-5lpbt     1/1     Running     0          2m13s
+   ```
+
+### Create Routes to Access the Application 
+
+ 
 
   
 
