@@ -573,7 +573,86 @@ This way developers can easily integrate VM based databases in their regular mic
 
 ### Create Routes to Access the Application 
 
- 
+We will need to create routes to access the front end and back end applications. 
 
+You can access the application through the OCP ingress. 
+
+1. Download the routes file
+
+   ```bash 
+   wget https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/routes.yaml
+   ```
+
+2. Change the URL to suit OCP cluster name and your domain.
+
+   In the downloaded file:
+
+   - **OCP Cluster Name** - xyz
+   - **Domain**          - ntnxlab.local
+
+3. Create the routes 
+
+   ```bash
+   oc apply -f routes.yaml
+   ```
+   ```bash title="Check the routes"
+   oc get routes | awk '{print $1,$2,$3}'
+   ```
+   ```text title="Output"
+   NAME         HOST/PORT                                      PATH
+   route-path-a flower.apps.hackathon.hackathon8.ntnxlab.local /
+   route-path-b flower.apps.hackathon.hackathon8.ntnxlab.local /admin
+   route-path-c flower.apps.hackathon.hackathon8.ntnxlab.local /api
+   route-path-d flower.apps.hackathon.hackathon8.ntnxlab.local /static/admin/
+   route-path-e flower.apps.hackathon.hackathon8.ntnxlab.local /static/rest_framework/
+   route-path-f flower.apps.hackathon.hackathon8.ntnxlab.local /static/
+   route-path-g flower.apps.hackathon.hackathon8.ntnxlab.local /media/
+   ```
+
+### Testing Front End React Application 
+
+2. Logon to your Windows Tools VM 
+   
+   - **Username** - administrator@ntnxlab.local
+   - **Password** - default password
+
+3. Open the following URL in Chrome browser to access the Front End React application
+   
+   ```url 
+   http://flower.apps.xyz.ntnxlab.local/
+   ```
+4. Enter the following credentials and click on **SIGN IN**
+
+   - **Username** - admin
+   - **Password** - admin_password
+
+   ![](images/react-splash.png)
+   
+5. Move the sliders accross and click on **Predict** to get flower names based on their physical attributes
+
+   ![](images/react-prediction.png)
+
+Now that we have finished testing the front end React application, let's move on to testing back end Django application.
+
+### Testing Back End Django Application 
+
+Django application is used to manage users that will access and manage the front end React application.
+
+We will create a new user in the Django application which we will then use in authenicating to front end React application.
+
+1. Open the following URL in Chrome browser to access the Front End React application
+   
+   ```url 
+   http://flower.apps.xyz.ntnxlab.local/admin 
+   ```
+
+4. Enter the following credentials and click on **SIGN IN**
+
+   - **Username** - admin
+   - **Password** - admin_password
+
+   ![](images/django-spash.png)
+
+5. 
   
 
