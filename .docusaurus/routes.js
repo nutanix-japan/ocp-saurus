@@ -99,7 +99,7 @@ export default [
   },
   {
     path: '/',
-    component: ComponentCreator('/', '81a'),
+    component: ComponentCreator('/', '2d8'),
     routes: [
       {
         path: '/',
@@ -124,11 +124,6 @@ export default [
         component: ComponentCreator('/ocp_ndb/', '91c'),
         exact: true,
         sidebar: "tutorialSidebar"
-      },
-      {
-        path: '/ocp_ndb/mdx',
-        component: ComponentCreator('/ocp_ndb/mdx', 'e64'),
-        exact: true
       },
       {
         path: '/ocp_ntnx_hci/import_bp',
