@@ -13,7 +13,7 @@ Deploy this VM on your assigned cluster if directed to do so as part of **Lab Se
 
 :::caution
 
-Only deploy the VM once, it does not need to be cleaned up as part of any lab completion.
+Only deploy the VM once with your *Initials* in the VM name, it does not need to be cleaned up as part of any lab completion.
 
 :::
 
@@ -49,8 +49,9 @@ Only deploy the VM once, it does not need to be cleaned up as part of any lab co
         - **Script Type** - Cloud-init (Linux)
         - **Configuration Method** - Custom Script 
         - Paste the following script in the script window 
-          ```yaml
+          ```yaml title="Remember to change to your hostname"
           #cloud-config
+          fqdn: initials-linuxtoolsvm  # << Change this
           package_upgrade: true
           packages:
             - git
@@ -67,7 +68,7 @@ Only deploy the VM once, it does not need to be cleaned up as part of any lab co
 12. Under **Actions** drop-down menu, choose **Power On**
 
 :::note
-It may take 5 to 10 minutes for the VM to be ready.
+It may take up to 10 minutes for the VM to be ready.
 
 You can watch the console of the VM from Prism Central to make sure all the clouinit script has finished running.
 :::
