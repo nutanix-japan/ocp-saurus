@@ -25,9 +25,9 @@ Only deploy the VM once, it does not need to be cleaned up as part of any lab co
     -   **Name** - *Initials*-Linux-ToolsVM
     -   **Description** - (Optional) Description for your VM.
     -   **Number of VMs** - 1
-    -   **vCPU(s)** - 1
-    -   **Number of Cores per vCPU** - 2
-    -   **Memory** - 2 GiB
+    -   **CPU(s)** - 4
+    -   **Number of Cores per CPU** - 1
+    -   **Memory** - 4 GiB
 2.  Click **Next**
 3.  Under **Disks** select **Attach Disk**
     -   **Type** - DISK
@@ -45,7 +45,22 @@ Only deploy the VM once, it does not need to be cleaned up as part of any lab co
 8.  In **Management** section
     -   **Categories** - leave blank
     -   **Timezone** - leave at default UTC
-    -   **Guest Customization** - No customization
+    -   **Guest Customization** - 
+        - **Script Type** - Cloud-init (Linux)
+        - **Configuration Method** - Custom Script 
+        - Paste the following script in the script window 
+          ```yaml
+          #cloud-config
+          package_upgrade: true
+          packages:
+            - git
+            - bind-utils
+            - nmap
+            - curl
+            - wget 
+            - vim
+           ```
+9. Click on **Next**
 9.  Click **Create VM** at the bottom
 10. Go back to **Prism Central** > **Menu** > **Compute and Storage** > **VMs**
 11. Select your *Initials*-Linux-ToolsVM
