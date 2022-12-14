@@ -663,8 +663,9 @@ You can access the application through the OCP ingress.
 
 2. Logon to your Windows Tools VM 
    
-   - **Username** - administrator@ntnxlab.local
-   - **Password** - default password
+    > **Username** - administrator@ntnxlab.local
+
+    > **Password** - default password
 
 3. Open the following URL in Chrome browser to access the Front End React application
    
@@ -673,8 +674,9 @@ You can access the application through the OCP ingress.
     ```
 4. Enter the following credentials and click on **SIGN IN**
 
-    - **Username** - admin
-    - **Password** - admin_password
+    > **Username** - admin
+
+    > **Password** - admin_password
 
     ![](images/react-splash.png)
    
@@ -698,8 +700,9 @@ We will create a new user in the Django application which we will then use in au
 
 2. Enter the following credentials and click on **SIGN IN**
 
-    - **Username** - admin
-    - **Password** - admin_password
+    > **Username** - admin
+
+    > **Password** - admin_password
  
     ![](images/django-splash.png)
 
@@ -707,11 +710,13 @@ We will create a new user in the Django application which we will then use in au
 
     ![](images/add-user.png)
 
-4. Enter the following details
+4. Enter the following details:
+    
+    > **Username** - *Your-Initials-user* (e.g. xyz-user)
 
-    - **Username** - *Your-Initials-user* (e.g. xyz-user)
-    - **Password** - password of your choice (make sure to remember this)
-    - **Password confirmation** - re-enter the password of your choice
+    > **Password** - password of your choice (make sure to remember this)
+    
+    > **Password confirmation** - re-enter the password of your choice
 
 5. Click on **SAVE**
 
@@ -721,14 +726,15 @@ We will create a new user in the Django application which we will then use in au
 
 7. Return to front end React application and test the new credentials. 
 
-8. Check if you are able to login with the newly created Credentials
+8. Check if you are able to login with the newly created credentials. Play around with the flower name prediction AI application.
 
     ```url 
     http://flower.apps.xyz.ntnxlab.local/admin 
     ```
     
-    - **Username** - *Your-Initials-user* (e.g. xyz-user)
-    - **Password** - password of your choice from previous step
+    > **Username** - *Your-Initials-user* (e.g. xyz-user)
+    
+    > **Password** - password of your choice from previous step
  
     ![](images/react-new-signin.png)
  
@@ -736,7 +742,7 @@ We will create a new user in the Django application which we will then use in au
 
 ### Checking PostGres Database Data 
 
-Let us confirm that the new user we created in from the back end Django app is present in the database 
+In this section we will confirm that the new user we created in from the back end Django app is present in the database 
 
 1. Log back into the database to check if there are new users 
    
