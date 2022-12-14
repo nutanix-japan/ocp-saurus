@@ -39,7 +39,7 @@ Estimated time to complete this lab is 60 minutes.
 
 :::note 
 
-At the moment only **PostGres** databases are available to be deployed by NDB Operator for OCP. Nutanix will be adding other NDB capable database platforms (MSSQL, MYSQL, Oracle, etc.) incrementally. There are no ETAs at the moment. Please look for release announcements.
+At the moment only **PostGres** databases are available to be deployed by NDB Operator for OCP. Nutanix will be adding other NDB capable database platforms (MSSQL, MYSQL, Oracle, etc.) incrementally. There are no ETAs at the moment. Please check Nutanix release announcements.
 
 :::
 
@@ -65,6 +65,9 @@ This way developers can easily integrate VM based databases in their regular mic
 ### Prepare you Linux Tools VM
 
 1. Logon to your Linux Tools VM using root user name and password
+
+   - **Username** - root
+   - **Password** - default password
 
 2. Create a new directory in the home
    
@@ -361,11 +364,11 @@ It will take about 20 minutes to provision the ``pgserver`` database server and 
     service/dbforflower-svc     ClusterIP           172.30.38.131    <none>        80/TCP    20m
 
     NAME                        ENDPOINTS           AGE    
-    endpoints/dbforflower-svc   10.38.7.115:5432    20m                                   
+    endpoints/dbforflower-svc   10.38.7.115:5432    20m       # << This is IP of the PostGres server deployed by NDB                            
     ```
-    The database is now available as an ClusterIP service to other workloads.
+    The database is now available as an ``ClusterIP`` resource on port ``80``service to other workloads.
 
-    Now we just need to use the cluster IP of the database service to the connect the front end application.
+    We just need to use the ``ClusterIP`` of the database service to the connect the front end application.
 
 12. Check if you are able to connect to you database. We will do this by deploying a standalone postgres pod.
 
@@ -402,7 +405,7 @@ It will take about 20 minutes to provision the ``pgserver`` database server and 
     postgres             | Superuser, Create role, Create DB, Replication | {}
     ```
 
-13. You are able to connect to the database without leaving the OCP environment
+You are able to connect to the database without leaving the OCP command line environment. This is what most developers and devops engineers will have access to, so they can deploy applications. 
 
 ## Installing a Custom Three-layer Application 
 
@@ -604,6 +607,27 @@ We have only modified the implementation to suit deployment in a OCP cluster wit
 We will need to create routes to access the front end and back end applications. 
 
 You can access the application through the OCP ingress. 
+
+   ```mdx-code-block
+   <BrowserWindow>
+   <details>
+   <summary>Why OCP Routes and not Ingress?</summary>
+   <div>
+   <body>
+
+   :::info 
+
+   OCP works with ``Routes`` kubernetes resource. Since ``Routes`` was developed much earlier than ``Ingress`` resource, we will use ``Routes`` resource in this lab.
+
+   Creating ``Ingress`` will still work, however they will be deployed as ``Routes`` in OCP.
+
+   :::
+
+   
+   </body>
+   </div>
+   </details>
+   </BrowserWindow>
 
 1. Download the routes file
 
