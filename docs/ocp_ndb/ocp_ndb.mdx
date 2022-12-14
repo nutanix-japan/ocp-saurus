@@ -39,7 +39,7 @@ Estimated time to complete this lab is 60 minutes.
 
 :::note 
 
-At the moment only **PostGres** databases are available to be deployed by NDB Operator for OCP. Nutanix will be adding other NDB capable database platforms (MSSQL, MYSQL, Oracle, etc.) incrementally. There are no ETAs at the moment. Please check Nutanix release announcements.
+At the moment only **Postgres** databases are available to be deployed by NDB Operator for OCP. Nutanix will be adding other NDB capable database platforms (MSSQL, MYSQL, Oracle, etc.) incrementally. There are no ETAs at the moment. Please check Nutanix release announcements.
 
 Nutanix provides 24x7x365 support for Postgres along with Postgres Professional. See this [Solution Brief](https://www.nutanix.com/content/dam/nutanix/partners/technology-alliances/solution-briefs/sb-postges-professional-and-nutanix.pdf) for more details. 
 :::
@@ -415,7 +415,7 @@ In this section we will install a three-layer application (front end, back end a
 :::note References
 All ideas for this three-layer this application come from this [blog](https://www.datagraphi.com/blog/post/2021/2/10/kubernetes-guide-deploying-a-machine-learning-app-built-with-django-react-and-postgresql-using-kubernetes).
 
-We have only modified the implementation to suit deployment in a OCP cluster with NDB deployed PostGres database.
+We have only modified the implementation to suit deployment in a OCP cluster with NDB deployed Postgres database.
 :::
 
 ### Create Database Schema and Data
@@ -741,7 +741,7 @@ We will create a new user in the Django application which we will then use in au
  
     ![](images/react-new-signin-splash.png)
 
-### Checking PostGres Database Data 
+### Checking Postgres Database Data 
 
 In this section we will confirm that the new user we created in from the back end Django app is present in the database 
 
@@ -781,7 +781,7 @@ In this section we will confirm that the new user we created in from the back en
     (3 rows)
     ```
 
-This proves that all data is present in the datastore (PostGres in a VM deployed by NDB) of the application. 
+This proves that all data is present in the datastore (Postgres in a VM deployed by NDB) of the application. 
 
 ## Takeaways
 
