@@ -41,6 +41,7 @@ Estimated time to complete this lab is 60 minutes.
 
 At the moment only **PostGres** databases are available to be deployed by NDB Operator for OCP. Nutanix will be adding other NDB capable database platforms (MSSQL, MYSQL, Oracle, etc.) incrementally. There are no ETAs at the moment. Please check Nutanix release announcements.
 
+Nutanix provides 24x7x365 support for Postgres along with Postgres Professional. See this [Solution Brief](https://www.nutanix.com/content/dam/nutanix/partners/technology-alliances/solution-briefs/sb-postges-professional-and-nutanix.pdf) for more details. 
 :::
 
 ## High Level Overview of NDB and OCP integration
@@ -606,7 +607,7 @@ We have only modified the implementation to suit deployment in a OCP cluster wit
 
 We will need to create routes to access the front end and back end applications. 
 
-You can access the application through the OCP ingress. 
+You can access the application through the OCP Routes. 
 
    ```mdx-code-block
    <BrowserWindow>
