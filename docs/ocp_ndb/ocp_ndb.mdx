@@ -65,11 +65,21 @@ This way developers can easily integrate VM based databases in their regular mic
 
 ### Prepare you Linux Tools VM
 
-1. Logon to your Linux Tools VM using root user name and password
+1. Logon to your Linux Tools VM using root user name and password (Terminal on Mac/ Putty or PowerShell in Windows)
+   
+   ```bash 
+   ssh -l root <Linux Tools VM IP>
+   ```
 
    - **Username** - root
    - **Password** - default password
+   
+   :::tip Can't find the Linux Tools VM?
 
+   If you don't have a Linux Tools VM deployed, follow instructions [here](../toolsvm/linux_tools_vm.mdx) to deploy one.
+   
+   :::
+   
 2. Create a new directory in the home
    
    ```bash
@@ -219,7 +229,7 @@ In this section we will create a Postgres database using NDB Operator.
    
 3. Create a secret with credentials (password and ssh public key) for the new Postgres VM that you will be provisioning.
 
-   SSH key is a requirement. This must be included to authenticate to your NDB deployed VM. ``Database`` resource will fail to deploy if not included.
+   SSH key is a requirement. This must be included to authenticate to your NDB deployed VM. ``Database`` resource will fail to deploy if **ssh-public-key** is not included.
   
    ```bash
    cat << EOF > your-db-secret.yaml
