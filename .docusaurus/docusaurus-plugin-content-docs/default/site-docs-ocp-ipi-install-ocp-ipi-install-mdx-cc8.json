@@ -16,11 +16,11 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Day 0 and Day 1 Operations",
-    "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
+    "title": "Getting Started",
+    "permalink": "/"
   },
   "next": {
-    "title": "OCP: Assisted Installation",
-    "permalink": "/ocp_assisted_install/"
+    "title": "Deploy Nutanix CSI for OCP",
+    "permalink": "/ocp_ntnx_hci/ocp_csi"
   }
 }

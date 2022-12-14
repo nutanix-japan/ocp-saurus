@@ -18,8 +18,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Getting Started",
-    "permalink": "/"
+    "title": "OCP: Assisted Installation",
+    "permalink": "/ocp_assisted_install/"
   },
   "next": {
     "title": "Deploy Provisioning VM",

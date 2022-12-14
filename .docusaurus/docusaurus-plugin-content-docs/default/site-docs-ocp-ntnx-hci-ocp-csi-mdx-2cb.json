@@ -18,8 +18,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "OCP: Assisted Installation",
-    "permalink": "/ocp_assisted_install/"
+    "title": "OCP: IPI Installation",
+    "permalink": "/ocp_ipi_install/"
   },
   "next": {
     "title": "Provision Storage for Image Registry",

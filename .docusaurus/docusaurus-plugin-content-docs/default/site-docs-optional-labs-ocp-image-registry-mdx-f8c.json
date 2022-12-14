@@ -20,7 +20,7 @@
     "permalink": "/ocp_ntnx_hci/ocp_csi"
   },
   "next": {
-    "title": "Nutanix Objects as Backup Destination",
-    "permalink": "/optional_labs/objects_prep"
+    "title": "OCP and Nutanix NDB",
+    "permalink": "/ocp_ndb/"
   }
 }

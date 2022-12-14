@@ -39,8 +39,8 @@
               },
               "sidebar": "tutorialSidebar",
               "next": {
-                "title": "Architecture and Initial Setup",
-                "permalink": "/ocp_ntnx_hci/import_bp"
+                "title": "OCP: IPI Installation",
+                "permalink": "/ocp_ipi_install/"
               }
             },
             {
@@ -62,12 +62,12 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP: IPI Installation",
-                "permalink": "/ocp_ipi_install/"
+                "title": "Backup and Restore Applications",
+                "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
               },
               "next": {
-                "title": "Deploy Nutanix CSI for OCP",
-                "permalink": "/ocp_ntnx_hci/ocp_csi"
+                "title": "Architecture and Initial Setup",
+                "permalink": "/ocp_ntnx_hci/import_bp"
               }
             },
             {
@@ -88,12 +88,12 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Day 0 and Day 1 Operations",
-                "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
+                "title": "Getting Started",
+                "permalink": "/"
               },
               "next": {
-                "title": "OCP: Assisted Installation",
-                "permalink": "/ocp_assisted_install/"
+                "title": "Deploy Nutanix CSI for OCP",
+                "permalink": "/ocp_ntnx_hci/ocp_csi"
               }
             },
             {
@@ -129,12 +129,12 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP: Deploying IDP for OCP",
-                "permalink": "/optional_labs/ocp_idp"
+                "title": "Provision Storage for Image Registry",
+                "permalink": "/optional_labs/ocp_image_registry"
               },
               "next": {
-                "title": "Linux Tools VM",
-                "permalink": "/toolsvms/linux_tools_vm"
+                "title": "Nutanix Objects as Backup Destination",
+                "permalink": "/optional_labs/objects_prep"
               }
             },
             {
@@ -157,8 +157,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Getting Started",
-                "permalink": "/"
+                "title": "OCP: Assisted Installation",
+                "permalink": "/ocp_assisted_install/"
               },
               "next": {
                 "title": "Deploy Provisioning VM",
@@ -185,8 +185,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP: Assisted Installation",
-                "permalink": "/ocp_assisted_install/"
+                "title": "OCP: IPI Installation",
+                "permalink": "/ocp_ipi_install/"
               },
               "next": {
                 "title": "Provision Storage for Image Registry",
@@ -217,8 +217,8 @@
                 "permalink": "/ocp_ntnx_hci/ocp_vms"
               },
               "next": {
-                "title": "OCP: IPI Installation",
-                "permalink": "/ocp_ipi_install/"
+                "title": "OCP: Create Additional OCP Clusters",
+                "permalink": "/optional_labs/ocp_vms_2"
               }
             },
             {
@@ -295,8 +295,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Provision Storage for Image Registry",
-                "permalink": "/optional_labs/ocp_image_registry"
+                "title": "OCP and Nutanix NDB",
+                "permalink": "/ocp_ndb/"
               },
               "next": {
                 "title": "Deploying Backup Application",
@@ -325,8 +325,8 @@
                 "permalink": "/optional_labs/ocp_vms_2"
               },
               "next": {
-                "title": "OCP and Nutanix NDB",
-                "permalink": "/ocp_ndb/"
+                "title": "Linux Tools VM",
+                "permalink": "/toolsvms/linux_tools_vm"
               }
             },
             {
@@ -351,8 +351,8 @@
                 "permalink": "/ocp_ntnx_hci/ocp_csi"
               },
               "next": {
-                "title": "Nutanix Objects as Backup Destination",
-                "permalink": "/optional_labs/objects_prep"
+                "title": "OCP and Nutanix NDB",
+                "permalink": "/ocp_ndb/"
               }
             },
             {
@@ -373,8 +373,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Backup and Restore Applications",
-                "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
+                "title": "Day 0 and Day 1 Operations",
+                "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
               },
               "next": {
                 "title": "OCP: Deploying IDP for OCP",
@@ -401,8 +401,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP and Nutanix NDB",
-                "permalink": "/ocp_ndb/"
+                "title": "OCP: Deploying IDP for OCP",
+                "permalink": "/optional_labs/ocp_idp"
               },
               "next": {
                 "title": "Windows Tools VM",
@@ -485,8 +485,8 @@
                 "permalink": "/workloads_on_ocp/ocp_wordpress_deploy"
               },
               "next": {
-                "title": "OCP: Create Additional OCP Clusters",
-                "permalink": "/optional_labs/ocp_vms_2"
+                "title": "OCP: Assisted Installation",
+                "permalink": "/ocp_assisted_install/"
               }
             },
             {
@@ -526,6 +526,66 @@
                 "id": "intro"
               },
               {
+                "type": "doc",
+                "id": "ocp_ipi_install/ocp_ipi_install"
+              },
+              {
+                "type": "category",
+                "label": "Nutanix Storage CSI",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "ocp_ntnx_hci/ocp_csi"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "optional_labs/ocp_image_registry"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "doc",
+                "id": "ocp_ndb/ocp_ndb"
+              },
+              {
+                "type": "category",
+                "label": "OCP Workload Backup/Restore",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "optional_labs/objects_prep"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "workloads_on_ocp/ocp_k10"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "workloads_on_ocp/ocp_wordpress_deploy"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "workloads_on_ocp/ocp_k10_backup_restore"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
+                "type": "category",
+                "label": "OCP with Assisted Installer",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "ocp_assisted_install/ocp_assisted_install"
+                  }
+                ],
+                "collapsed": true,
+                "collapsible": true
+              },
+              {
                 "type": "category",
                 "label": "OCP with Nutanix Cloud Manager (NCM)",
                 "items": [
@@ -551,70 +611,6 @@
               },
               {
                 "type": "category",
-                "label": "OCP with IPI Installer",
-                "items": [
-                  {
-                    "type": "doc",
-                    "id": "ocp_ipi_install/ocp_ipi_install"
-                  }
-                ],
-                "collapsed": true,
-                "collapsible": true
-              },
-              {
-                "type": "category",
-                "label": "OCP with Assisted Installer",
-                "items": [
-                  {
-                    "type": "doc",
-                    "id": "ocp_assisted_install/ocp_assisted_install"
-                  }
-                ],
-                "collapsed": true,
-                "collapsible": true
-              },
-              {
-                "type": "category",
-                "label": "Nutanix Storage CSI",
-                "items": [
-                  {
-                    "type": "doc",
-                    "id": "ocp_ntnx_hci/ocp_csi"
-                  },
-                  {
-                    "type": "doc",
-                    "id": "optional_labs/ocp_image_registry"
-                  }
-                ],
-                "collapsed": true,
-                "collapsible": true
-              },
-              {
-                "type": "category",
-                "label": "Workloads on OCP",
-                "items": [
-                  {
-                    "type": "doc",
-                    "id": "optional_labs/objects_prep"
-                  },
-                  {
-                    "type": "doc",
-                    "id": "workloads_on_ocp/ocp_k10"
-                  },
-                  {
-                    "type": "doc",
-                    "id": "workloads_on_ocp/ocp_wordpress_deploy"
-                  },
-                  {
-                    "type": "doc",
-                    "id": "workloads_on_ocp/ocp_k10_backup_restore"
-                  }
-                ],
-                "collapsed": true,
-                "collapsible": true
-              },
-              {
-                "type": "category",
                 "label": "OCP Optional Labs",
                 "items": [
                   {
@@ -624,18 +620,6 @@
                   {
                     "type": "doc",
                     "id": "optional_labs/ocp_idp"
-                  }
-                ],
-                "collapsed": true,
-                "collapsible": true
-              },
-              {
-                "type": "category",
-                "label": "OCP and Nutanix NDB",
-                "items": [
-                  {
-                    "type": "doc",
-                    "id": "ocp_ndb/ocp_ndb"
                   }
                 ],
                 "collapsed": true,

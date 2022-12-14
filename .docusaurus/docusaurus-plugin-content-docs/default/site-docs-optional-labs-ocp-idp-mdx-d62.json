@@ -20,7 +20,7 @@
     "permalink": "/optional_labs/ocp_vms_2"
   },
   "next": {
-    "title": "OCP and Nutanix NDB",
-    "permalink": "/ocp_ndb/"
+    "title": "Linux Tools VM",
+    "permalink": "/toolsvms/linux_tools_vm"
   }
 }

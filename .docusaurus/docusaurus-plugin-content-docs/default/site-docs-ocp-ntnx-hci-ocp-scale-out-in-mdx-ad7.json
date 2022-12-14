@@ -22,7 +22,7 @@
     "permalink": "/ocp_ntnx_hci/ocp_vms"
   },
   "next": {
-    "title": "OCP: IPI Installation",
-    "permalink": "/ocp_ipi_install/"
+    "title": "OCP: Create Additional OCP Clusters",
+    "permalink": "/optional_labs/ocp_vms_2"
   }
 }

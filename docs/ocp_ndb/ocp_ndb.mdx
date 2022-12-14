@@ -15,12 +15,14 @@ customers are still using VM based databases as a datastore. The following may b
 - Customers DBA team has more expertise with VM based databases
 - Cloud based database providers (AWS RDS) with several database engines are used prevalently
 - Ease of deployment, scale and security (although security for microservices is improving at an exponential rate)
-- Ease of providing high availability, disaster recovery and backups for these VM based databases
+- Customer's knowledge in providing high availability, disaster recovery and backups for these VM based databases
 - Security of VMs in general 
+- Customers are using VM based databases and are in the middle of migrating to microservices based databases
+- Customers are using a hybrid database environment - both VM based and microservices based databases 
 
 Nutanix NDB offers Databases as a service using NDB. Cusotmers can provision hybrid multicloud DBaaS for Microsoft SQL Server, Oracle, PostgreSQL, MongoDB, and MySQL and be able to efficiently manage hundreds to thousands of databases.
 
-:::note
+:::info
 
 Estimated time to complete this lab is 60 minutes.
 
@@ -29,8 +31,17 @@ Estimated time to complete this lab is 60 minutes.
 ## Pre-requisites for using NDB Deployed Databases
 
 - NDB appliance deployed on the Nutanix cluster
-- OCP cluster deployed on the Nutanix cluster
+- OCP cluster deployed on the Nutanix cluster - Check the following portions of this guide to create a OCP cluster:
+  - [OCP with IPI Installer](../ocp_ipi_install/ocp_ipi_install.mdx) 
+  - [OCP with Assisted Installer](../ocp_assisted_install/ocp_assisted_install.mdx) or 
+  - [OCP with Nutanix Cloud Manager](../ocp_ntnx_hci/ocp_vms.mdx)
 - Networking requirements adhering to OCP and Nutanix
+
+:::note 
+
+At the moment only **PostGres** databases are available to be deployed by NDB Operator for OCP. Nutanix will be adding other NDB capable database platforms (MSSQL, MYSQL, Oracle, etc.) incrementally. There are no ETAs at the moment. Please look for release announcements.
+
+:::
 
 ## High Level Overview of NDB and OCP integration
 
@@ -323,7 +334,14 @@ This way developers can easily integrate VM based databases in their regular mic
 
    ![](images/ndbprogress.png)
 
-10. It will take about 20 minutes to provision the database server, once done, check the status in OCP
+:::info 
+
+It will take about 20 minutes to provision the ``pgserver`` database server and ``predictiondb`` database.
+:::
+
+### Check Database Connectivity
+
+1. Check the status of NDB deployed database in OCP
     
     ```bash
     oc get database 
@@ -386,7 +404,15 @@ This way developers can easily integrate VM based databases in their regular mic
 
 13. You are able to connect to the database without leaving the OCP environment
 
-## Installing a Custom Application 
+## Installing a Custom Three-layer Application 
+
+In this section we will install a three-layer application (front end, back end and database) to showcase the value of NDB Operator to a customer.
+
+:::note References
+All ideas for this three-layer this application come from this [blog](https://www.datagraphi.com/blog/post/2021/2/10/kubernetes-guide-deploying-a-machine-learning-app-built-with-django-react-and-postgresql-using-kubernetes).
+
+We have only modified the implementation to suit deployment in a OCP cluster with NDB deployed PostGres database.
+:::
 
 ### Create Database Schema and Data
 
@@ -455,7 +481,7 @@ This way developers can easily integrate VM based databases in their regular mic
    ```bash
    oc get job django-job -w
    ```
-   ```bash title="Output"
+   ```text title="Output"
    # oc get job -w
    NAME         COMPLETIONS   DURATION   AGE
    django-job   0/1           14s        15s
@@ -466,7 +492,7 @@ This way developers can easily integrate VM based databases in their regular mic
    
 3. You can analyse the logs to make sure the job has completed without any issues
 
-   ```bash title="Analyse the pod logs"
+   ```bash title="Analyse the pod logs - your pod name will be different"
    oc logs django-job-cmcxk
    ```
    ```bash title="You must see migration jobs runnig - ignore warnings"
@@ -494,7 +520,9 @@ This way developers can easily integrate VM based databases in their regular mic
    ```
 
    :::tip what if my job fails?
-   You would have to delete your job, change references in **app_variables** config map, and re-run it
+   You would have to troubleshoot. 
+   
+   Delete your job, change any references in **app_variables** config map that may have been wrong, and re-run the job.
 
    ```bash
    oc delete -f job_django.yaml
@@ -689,7 +717,7 @@ Let us confirm that the new user we created in from the back end Django app is p
 
 1. Log back into the database to check if there are new users 
    
-    ```bash title="Login to the pod and connect to database server"
+    ```bash title="Login to the psql pod and connect to database server"
     oc exec -it psql -- /bin/sh
     ```
     ```bash title="Inside the Postgres pod, logon to the predictiondb database"
@@ -714,6 +742,7 @@ Let us confirm that the new user we created in from the back end Django app is p
 
     ```text title="Output of query"
     predictiondb=# SELECT username, last_login FROM auth_user;
+
     username |          last_login           
    ----------+-------------------------------
     babu     | 2022-12-13 08:27:43.411894+00
@@ -724,5 +753,8 @@ Let us confirm that the new user we created in from the back end Django app is p
 
 This proves that all data is present in the datastore (PostGres in a VM deployed by NDB) of the application. 
 
-NDB Operator provides ease of use for developers, DevOps engineers, administrators to deploy and use VM based databases without leaving the OCP (kubernetes) ecosystem.
+## Takeaways
 
+- NDB Operator provides ease of use for developers, DevOps engineers, administrators to deploy and use VM based databases without leaving the OCP (kubernetes) ecosystem.
+- Deploying databases is as simple as creating a yaml manifest file 
+- NDB deployed databases are available as a kubernetes ``service`` for other microservices in the ecosystem to connect to

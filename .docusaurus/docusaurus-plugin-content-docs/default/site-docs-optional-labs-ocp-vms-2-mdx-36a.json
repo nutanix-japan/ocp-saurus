@@ -16,8 +16,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Backup and Restore Applications",
-    "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
+    "title": "Day 0 and Day 1 Operations",
+    "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
   },
   "next": {
     "title": "OCP: Deploying IDP for OCP",
