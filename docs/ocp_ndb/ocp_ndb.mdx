@@ -140,7 +140,13 @@ This way developers can easily integrate VM based databases in their regular mic
 
 ### Install the NDB Operator for OCP
 
-1. Install the NDB Operator/Controller on OCP
+1. Change to the downloaded NDB opertor git repo folder
+   
+   ```bash
+   cd /root/ndb-operator
+   ```
+
+2. Install the NDB Operator/Controller on OCP
 
     ```bash
     make deploy
@@ -166,11 +172,11 @@ This way developers can easily integrate VM based databases in their regular mic
     deployment.apps/ndb-operator-controller-manager created
     ```
 
-:::info
-
-The operator will be deployed in ``ndb-operator-system`` namespace/project.
-
-:::
+   :::info
+   
+   The operator will be deployed in ``ndb-operator-system`` namespace/project.
+   
+   :::
 
 ## Create NDB Postgres DB 
 
