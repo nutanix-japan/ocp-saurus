@@ -15,12 +15,12 @@ customers are still using VM based databases as a datastore. The following may b
 - Customers DBA team has more expertise with VM based databases
 - Cloud based database providers (AWS RDS) with several database engines are used prevalently
 - Ease of deployment, scale and security (although security for microservices is improving at an exponential rate)
-- Customer's knowledge in providing high availability, disaster recovery and backups for these VM based databases
+- Customer's extensive knowledge in providing high availability, disaster recovery and backups for these VM based databases
 - Security of VMs in general 
 - Customers are using VM based databases and are in the middle of migrating to microservices based databases
 - Customers are using a hybrid database environment - both VM based and microservices based databases 
 
-Nutanix NDB offers Databases as a service using NDB. Cusotmers can provision hybrid multicloud DBaaS for Microsoft SQL Server, Oracle, PostgreSQL, MongoDB, and MySQL and be able to efficiently manage hundreds to thousands of databases.
+Nutanix NDB offers Databases as a service using NDB. Customers can provision hybrid multicloud DBaaS for Microsoft SQL Server, Oracle, PostgreSQL, MongoDB, and MySQL and be able to efficiently manage hundreds to thousands of databases.
 
 :::info
 
@@ -48,7 +48,7 @@ Nutanix provides 24x7x365 support for Postgres along with Postgres Professional.
 
 At a very high level we will perform the following steps:
 
-1. Install NDB Operator on the OCP cluster - using helm 
+1. Install NDB Operator on the OCP cluster
 2. Deploy a new NDB Postgres Database
 3. Install a custom application on OCP
 4. Connect application to NDB Postgres Database
@@ -168,7 +168,15 @@ This way developers can easily integrate VM based databases in their regular mic
 
 ## Create NDB Postgres DB 
 
-### Prepare Secrets for your Database
+In this section we will create a Postgres database using NDB Operator. 
+
+### High Level Steps
+
+1. NDB operator will communicate with NDB server with a create database request 
+2. NDB server will create the Postgres database VM (instance) and postgres database
+3. NDB server will respond to NDB Operator with the result of the requested operation
+
+### Prepare Secrets for your Database Server and Database
 
 1. Create a new OCP project
    
@@ -176,7 +184,7 @@ This way developers can easily integrate VM based databases in their regular mic
    oc new-project ndb
    ```
 
-2. Create a secret to access NDB server
+2. Create a secret for NDB Operator to access NDB server
 
    ```bash
    cat << EOF > your-ndb-secret.yaml
@@ -190,16 +198,16 @@ This way developers can easily integrate VM based databases in their regular mic
      password: password-for-ndb-server
    EOF
    ```
-   ```bash title="Edit the manifest and apply it"
+   ```bash title="Edit the manifest with your NDB server credentials"
    vi your-ndb-secret.yaml
+   ```
+   ```bash title="Apply the manifest to create NDB server credentials secret"
    oc apply -f your-ndb-secret.yaml
    ```
-   ```bash title="Edit the manifest and apply it"
-   vi your-db-secret.yaml
-   oc apply -f your-db-secret.yaml
-   ```
    
-3. Create a secret with credentials (password and ssh public key) for the new Postgres VM that you will be provisioning
+3. Create a secret with credentials (password and ssh public key) for the new Postgres VM that you will be provisioning.
+
+   SSH key is a requirement. This must be included to authenticate to your NDB deployed VM. ``Database`` resource will fail to deploy if not included.
   
    ```bash
    cat << EOF > your-db-secret.yaml
@@ -237,6 +245,13 @@ This way developers can easily integrate VM based databases in their regular mic
    </div>
    </details>
    </BrowserWindow>
+
+   ```bash title="Edit the manifest with your Postgres DB server credentials"
+   vi your-db-secret.yaml
+   ```
+   ```bash title="Apply the manifest to create your Postgres DB server credentials secret"
+   oc apply -f your-db-secret.yaml
+   ```
    
 ### Get NDB Cluster's UUID
 
@@ -311,7 +326,7 @@ This way developers can easily integrate VM based databases in their regular mic
    vi ndb.yaml
    ```
 
-6. Create the NDB database
+6. Create the NDB ``Database`` resource
    
    ```bash
    oc apply -f ndb.yaml
