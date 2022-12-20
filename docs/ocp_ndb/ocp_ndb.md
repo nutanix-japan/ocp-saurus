@@ -88,7 +88,7 @@ This way developers can easily integrate VM based databases in their regular mic
    ```
 
    > **Username** - root
-   
+
    > **Password** - default password
    
    :::tip Can't find the Linux Tools VM?
@@ -358,8 +358,9 @@ In this section we will create a Postgres database using NDB Operator.
 
 4. We need to get the NDB server's cluster UUID to use in the next step; to facilitate this, logon to your NDB VM UI with the following credentials
 
-   - **username** - admin
-   - **password** - from your HPOC reservation
+   > **Username** - admin
+
+   > **Password** - from your HPOC reservation
    
 5. On the top right-hand corner, click on **admin** user name and select **REST API Explorer**
 
