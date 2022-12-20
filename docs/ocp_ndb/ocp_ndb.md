@@ -582,7 +582,7 @@ We have only modified the implementation to suit deployment in a OCP cluster wit
      DB_HOST:        #  << Match your database service    
      # Example
      # DB_HOST: dbforflower-svc
-     DB_PORT:        #  << Match your database service's port 
+     DB_PORT:        #  << Match your database service's port number
      # Example
      # DB_PORT: "80"                  
    ```
