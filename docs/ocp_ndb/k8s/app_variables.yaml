@@ -23,6 +23,6 @@ data:
   DB_HOST:        #  << Match your database service    
   # Example
   # DB_HOST: dbforflower-svc
-  DB_PORT:        #  << Match your database service's port 
+  DB_PORT:        #  << Match your database service's port number
   # Example
   # DB_PORT: "80" 
