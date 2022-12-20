@@ -714,7 +714,51 @@ In this section we will create our installation configuration files which will b
    INFO Manifests created in: manifests and openshift
    ```
 
-7. Check the contents of ``manifests`` and ``openshift`` directories to make sure all the files are present
+7. Since we will be using CSI provisioned with Nutanix HCI storage later in the lab, we need to **enable iSCSI daemon** on all the worker nodes (optional for Master nodes) using [Machine Configuration Operator](https://docs.openshift.com/container-platform/4.10/post_installation_configuration/machine-configuration-tasks.html#machine-config-operator_post-install-machine-configuration-tasks) (MCO).
+   
+   :::info 
+   iSCSI daemon is usually in a disabled state while deploying OCP clusters. It is up to the customers to decide when and where to enable these daemons. 
+   :::
+
+   ```bash title="Create MCO config to start iSCSI daemon for worker nodes"
+   cat << EOF > manifests/99-worker-custom-enable-iscsid.yaml
+   apiVersion: machineconfiguration.openshift.io/v1
+   kind: MachineConfig
+   metadata:
+     labels:
+       machineconfiguration.openshift.io/role: worker
+     name: 99-worker-custom-enable-iscsid
+   spec:
+     config:
+       ignition:
+         version: 3.1.0
+       systemd:
+         units:
+         - enabled: true
+           name: iscsid.service
+   EOF
+   ```
+   ```bash title="Optional - create MCO config to start iSCSI daemon for master nodes"
+   cat << EOF > manifests/99-master-custom-enable-iscsid.yaml
+   apiVersion: machineconfiguration.openshift.io/v1
+   kind: MachineConfig
+   metadata:
+     labels:
+       machineconfiguration.openshift.io/role: master
+     name: 99-master-custom-enable-iscsid
+   spec:
+     config:
+       ignition:
+         version: 3.1.0
+       systemd:
+         units:
+         - enabled: true
+           name: iscsid.service
+   EOF
+   ```
+
+
+7. Check the contents of ``manifests`` and ``openshift`` directories to make sure all the files are present (including iSCSI daemon MCO files)
 
    ```bash
    ls -l openshift manifests
@@ -741,13 +785,16 @@ This will be simplest part of all, provided you have done everything correctly t
 1. Start the installation of OCP cluster by executing the following
 
    ```bash 
-   openshift-install create cluster 
+   nohup openshift-install create cluster &
    ```
-   :::tip Want more details about the installation?
-   if you would like to see debug details and be able to capture logs, and also have access to the console, execute the following command:
+   :::tip Do you Need more details about installation?
+   if you would like to see debug details and be able to capture logs, and also have access to the console, execute the following commands:
 
    ```bash 
-   openshift-install create cluster --log-level=debug | tee create-cluster.log &
+   nohup openshift-install create cluster --log-level=debug &
+   ```
+   ```bash title="Now you can follow the nohup logs to see installation progress"
+   tail -f nohup.out
    ```
    :::
 
