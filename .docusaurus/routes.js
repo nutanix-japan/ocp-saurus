@@ -99,7 +99,7 @@ export default [
   },
   {
     path: '/',
-    component: ComponentCreator('/', '2d8'),
+    component: ComponentCreator('/', 'ef0'),
     routes: [
       {
         path: '/',
@@ -121,7 +121,7 @@ export default [
       },
       {
         path: '/ocp_ndb/',
-        component: ComponentCreator('/ocp_ndb/', '91c'),
+        component: ComponentCreator('/ocp_ndb/', 'cd3'),
         exact: true,
         sidebar: "tutorialSidebar"
       },

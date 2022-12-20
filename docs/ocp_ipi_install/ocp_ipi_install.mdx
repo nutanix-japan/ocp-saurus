@@ -2,6 +2,9 @@
 title: "OCP: IPI Installation"
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # OCP IPI Installation
 
 OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives customer a intutive and easy way to deploy OCP cluster on Nutanix AOS.
@@ -716,8 +719,12 @@ In this section we will create our installation configuration files which will b
 
 7. Since we will be using CSI provisioned with Nutanix HCI storage later in the lab, we need to **enable iSCSI daemon** on all the worker nodes (optional for Master nodes) using [Machine Configuration Operator](https://docs.openshift.com/container-platform/4.10/post_installation_configuration/machine-configuration-tasks.html#machine-config-operator_post-install-machine-configuration-tasks) (MCO).
    
-   :::info 
+   :::caution 
    iSCSI daemon is usually in a disabled state while deploying OCP clusters. It is up to the customers to decide when and where to enable these daemons. 
+
+   In our lab, we have decided to enable it now, so we can use Nutanix CSI to provide storage to applications. 
+   
+   Enabling iSCSI daemon at this stage prevents any reboot requirements after the cluster is deployed and serving workloads. 
    :::
 
    ```bash title="Create MCO config to start iSCSI daemon for worker nodes"
@@ -758,12 +765,15 @@ In this section we will create our installation configuration files which will b
    ```
 
 
-7. Check the contents of ``manifests`` and ``openshift`` directories to make sure all the files are present (including iSCSI daemon MCO files)
+7. Check the contents of ``manifests`` and ``openshift`` directories to make sure all the files are present (including iSCSI daemon MCO config. files)
 
    ```bash
    ls -l openshift manifests
    ```
-8. We have one last requirement to let IPI installer know that we will be using a self generated CA bundle, edit the ``manifests/cluster-proxy-01-config.yaml`` file
+8. We have one last requirement; to let IPI installer know that we will be using a self generated CA bundle. 
+   
+   Edit the ``manifests/cluster-proxy-01-config.yaml`` file to do this.
+
    ```bash
    vi manifests/cluster-proxy-01-config.yaml
    ```
@@ -800,7 +810,7 @@ This will be simplest part of all, provided you have done everything correctly t
 
 2. A typical installation flow would look like this
 
-   ```buttonless {16,18}
+   ```buttonless {16,18} title="Install output - note the access information to the OCP cluster"
    # openshift-install create cluster
    INFO Consuming Master Machines from target directory 
    INFO Consuming OpenShift Install (Manifests) from target directory 
@@ -822,10 +832,24 @@ This will be simplest part of all, provided you have done everything correctly t
    INFO Time elapsed: 27m0s
    ```
 3. Once the installation is done we can access OCP cluster using the following ways:
+   
+    <Tabs groupId="Login Method">
+    <TabItem value="kubeconfig file" label="kubeconfig">
 
-   ```bash title="OC or kubectl command line"
-   export KUBECONFIG=/root/xyz/auth/kubeconfig
-   ```
+    ```text title="Export your kubeconfig file to env"
+    export KUBECONFIG=/root/xyz/auth/kubeconfig
+    ```
+
+    </TabItem>
+    <TabItem value="kubeadmin credentials" label="kubeadmin">
+
+    ```text title="Make sure to use your password"
+    oc login -u kubeadmin -p xxxxx-xxxxx-xxxxx-xxxxx
+    ```
+
+    </TabItem>
+    </Tabs>
+   
    ```bash
    oc get nodes
    ##
@@ -837,6 +861,7 @@ This will be simplest part of all, provided you have done everything correctly t
    xyz-6zlwh-worker-njv66   Ready    worker   14m   v1.24.0+b62823b
    xyz-6zlwh-worker-mlgbh   Ready    worker   14m   v1.24.0+b62823b
    ```
+
    Through the OCP GUI using kubeadmin credentials
 
    From your UserXX-WindowsToolsPC, open Chrome

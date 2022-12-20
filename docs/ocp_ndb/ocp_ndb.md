@@ -96,33 +96,33 @@ This way developers can easily integrate VM based databases in their regular mic
    
    :::
 
-2. Create a new directory in the home
+<!-- 2. Create a new directory in the home
    
    ```bash
    mkdir /root/ndb
    cd /root/ndb 
-   ```
-3. Clone NDB operator's git repository
+   ``` -->
+<!-- 3. Clone NDB operator's git repository
 
    ```bash
    git clone https://github.com/nutanix-cloud-native/ndb-operator
    cd ndb-operator
-   ```
+   ``` -->
 
 4. Depending on you access to ``kubeconfig`` file or kubeadmin password, logon to the OCP cluster
    
     <Tabs groupId="Login Method">
     <TabItem value="kubeconfig file" label="kubeconfig">
 
-    ```bash title="Export your kubeconfig file to env"
+    ```text title="Export your kubeconfig file to env"
     export KUBECONFIG=/root/xyz/auth/kubeconfig
     ```
 
     </TabItem>
     <TabItem value="kubeadmin credentials" label="kubeadmin">
 
-    ```bash title="Make sure to use your password"
-    oc login -u kubeadmin -p UQVIT-7jBcB-VIQ9q-L2sNH
+    ```text title="Make sure to use your password"
+    oc login -u kubeadmin -p xxxxx-xxxxx-xxxxx-xxxxx
     ```
 
     </TabItem>
@@ -130,11 +130,24 @@ This way developers can easily integrate VM based databases in their regular mic
 
 5. Make sure your OCP cluster is accesible
 
-   ```bash
+   ```bash title="Ensure that you are getting output"
    oc get nodes
    ```
 
-7. We will install go language to be able to deploy the software
+6. Install Helm (if it is not present)
+
+   ```bash title="Install latest Helm"
+   curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+   #
+   chmod 700 get_helm.sh
+   #
+   ./get_helm.sh
+   ```
+   ```bash title="Verify Helm version"
+   helm version
+   ```
+   
+<!-- 7. We will install go language to be able to deploy the software
 
    :::caution Go version?
 
@@ -162,11 +175,66 @@ This way developers can easily integrate VM based databases in their regular mic
    ```
    ```bash title="Install build tools"
    yum groupinstall "Development Tools"
-   ```
+   ``` -->
 
 ### Install the NDB Operator for OCP
 
-1. Change to the downloaded NDB opertor git repo folder (if not already there)
+1. Add Nutanix's Helm repo
+   
+   ```bash
+   helm repo add nutanix https://nutanix.github.io/helm/
+   ```
+
+2. Install NDB Operator using Helm
+   
+   ```bash
+   helm install ndb-operator nutanix/ndb-operator -n ndb-operator --create-namespace
+   ```
+   ```text title="Output"
+   NAME: ndb-operator
+   LAST DEPLOYED: Mon Dec 19 22:58:45 2022
+   NAMESPACE: ndb-operator
+   STATUS: deployed           # << Ensure the deployed state
+   REVISION: 1
+   TEST SUITE: None
+   ``` 
+   :::info
+   
+   The operator will be deployed in ``ndb-operator`` namespace/project.
+   
+   :::
+
+3. Ensure all the resources are healthy in the ``ndb-operator`` namespace/project.
+
+   ```bash
+   oc get all -n ndb-operator
+   ```
+   ```text title="Output"
+   #
+   NAME                                                   READY   STATUS    RESTARTS   AGE
+   pod/ndb-operator-controller-manager-77fcb496d5-7qcfc   2/2     Running   0          2m16s
+   
+   NAME                                                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+   service/ndb-operator-controller-manager-metrics-service   ClusterIP   172.30.244.194   <none>        8443/TCP   2m16s
+   
+   NAME                                              READY   UP-TO-DATE   AVAILABLE   AGE
+   deployment.apps/ndb-operator-controller-manager   1/1     1            1           2m16s
+   
+   NAME                                                         DESIRED   CURRENT   READY   AGE
+   replicaset.apps/ndb-operator-controller-manager-77fcb496d5   1         1         1       2m16s
+   ```
+
+   :::tip
+
+   You can follow the logs of the ``ndb-operator-controller-manager`` ``deployment`` to see the activities of the NDB Operator.
+
+   ```bash
+   oc logs -f deployment.apps/ndb-operator-controller-manager -n ndb-operator
+   ```
+   
+   :::
+
+<!-- 1. Change to the downloaded NDB opertor git repo folder (if not already there)
    
     ```bash 
     cd /root/ndb/ndb-operator
@@ -195,14 +263,8 @@ This way developers can easily integrate VM based databases in their regular mic
     configmap/ndb-operator-manager-config created
     service/ndb-operator-controller-manager-metrics-service created
     Warning: would violate PodSecurity "restricted:v1.24": unrestricted capabilities (containers "kube-rbac-proxy", "manager" must set securityContext.capabilities.drop=["ALL"]), seccompProfile (pod or containers "kube-rbac-proxy", "manager" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
-    deployment.apps/ndb-operator-controller-manager created
-    ```
-
-   :::info
-   
-   The operator will be deployed in ``ndb-operator-system`` namespace/project.
-   
-   :::
+    deployment.apps/ndb-operator-controller-manager created 
+    ``` -->
 
 ## Create NDB Postgres DB 
 
@@ -297,6 +359,7 @@ In this section we will create a Postgres database using NDB Operator.
 
    - **username** - admin
    - **password** - from your HPOC reservation
+   
 5. On the top right-hand corner, click on **admin** user name and select **REST API Explorer**
 
 6. This will open a new browser tab
@@ -382,7 +445,7 @@ In this section we will create a Postgres database using NDB Operator.
 8. You can also track the progress of the database deployment by looking at the ``ndb-operator-controller-manager`` pod logs in ``ndb-operator-system`` namespace
 
    ```bash title="Make sure to use your pod name"
-   ocp logs pod/ndb-operator-controller-manager-56d475b4cc-7l9m -n ndb-operator-system -f
+   oc logs -f deployment.apps/ndb-operator-controller-manager -n ndb-operator
    ```
 
 9. You can also login to the NDB web page to see the progress. 
@@ -474,30 +537,26 @@ We have only modified the implementation to suit deployment in a OCP cluster wit
 
 ### Create Database Schema and Data
 
-1. Apply the following create application secrets and variables (configmap)
+1. Apply the application secrets manifest
    
    ```bash
    oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_secrets.yaml
-   oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_variables.yaml
    ```
-   ```mdx-code-block
-   <BrowserWindow>
-   <details>
-   <summary>Curious about the configmap?</summary>
-   <div>
-   <body>
-
-   :::info 
-
-   You can download the ``app_variables.yaml`` manifest to check what the database connection parameters are
-
-   You could use this manifest to change your database connection parameters if they are different
+2. Download and edit the configmap to match your database service name and port number (if you used a different database name in your ``ndb.yaml``  manifest)
 
    ```bash
    wget https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/app_variables.yaml
    #
-   cat app_variables.yaml
-   ## Output here
+   vi app_variables.yaml
+   ```
+   ```mdx-code-block
+   <BrowserWindow>
+   <details>
+   <summary>Make sure that your database service name and port number matches</summary>
+   <div>
+   <body>
+
+   ```bash {23,26}
    apiVersion: v1
    kind: ConfigMap
    metadata:
@@ -519,16 +578,26 @@ We have only modified the implementation to suit deployment in a OCP cluster wit
      DATABASE: postgres
      DB_ENGINE: "django.db.backends.postgresql"  
      DB_DATABASE: predictiondb
-     DB_USER: postgres                           
-     DB_HOST: dbforflower-svc                    #  << This is your your database service
-     DB_PORT: "80"                               #  << This is your database service's port 
+     DB_USER: postgres 
+     DB_HOST:        #  << Match your database service    
+     # Example
+     # DB_HOST: dbforflower-svc
+     DB_PORT:        #  << Match your database service's port 
+     # Example
+     # DB_PORT: "80"                  
    ```
    </body>
    </div>
    </details>
    </BrowserWindow>
 
-2. Run a job to populate your database with schema and data
+3. After making sure that your database service name and port number matches, apply the configmap manifest
+   
+   ```bash 
+   oc apply -f app_variables.yaml
+   ```
+
+2. Run this job to populate your database with schema and data
    
    ```bash
    oc apply -f https://raw.githubusercontent.com/nutanix-japan/ocp-saurus/main/docs/ocp_ndb/k8s/job_django.yaml
@@ -666,7 +735,7 @@ You can access the application through the OCP Routes.
    ```mdx-code-block
    <BrowserWindow>
    <details>
-   <summary>Why OCP Routes and not Ingress?</summary>
+   <summary>Why use OCP Routes but not kubernetes Ingress resource?</summary>
    <div>
    <body>
 
