@@ -37,7 +37,7 @@ Estimated time to complete this lab is **60 minutes**.
    NDB Operator was presented as a project in Nutanix Hackathon in 2022 by the Japan Solution Engineers (SE) team. The SEs identified a need in the 
    in the field for their customers and developed a version of the NDB Operator for OpenShift. 
    
-   The team won in the Hackathon tournament and it is now an available as a solution for customers to take advantage of. This is testament of how Nutanix always have value to customers in mind. 
+   The team won in the Hackathon tournament and it is now an available solution for customers to take advantage of. This is testament of how Nutanix always have value to customers in mind. 
    </body>
    </div>
    </details>
@@ -65,9 +65,9 @@ Nutanix provides 24x7x365 support for Postgres along with Postgres Professional.
 At a very high level we will perform the following steps:
 
 1. Install NDB Operator on the OCP cluster
-2. Deploy a new NDB Postgres Database
+2. Deploy a new NDB Postgres database
 3. Install a custom application on OCP
-4. Connect application to NDB Postgres Database
+4. Connect application to NDB Postgres database
    - Create database schema
    - Populate database with data 
 5. Perform tasks at application level
@@ -87,8 +87,9 @@ This way developers can easily integrate VM based databases in their regular mic
    ssh -l root <Linux Tools VM IP>
    ```
 
-   - **Username** - root
-   - **Password** - default password
+   > **Username** - root
+   
+   > **Password** - default password
    
    :::tip Can't find the Linux Tools VM?
 
