@@ -39,14 +39,14 @@
               },
               "sidebar": "tutorialSidebar",
               "next": {
-                "title": "OCP: IPI Installation",
+                "title": "OCP IPI Installation",
                 "permalink": "/ocp_ipi_install/"
               }
             },
             {
               "unversionedId": "ocp_assisted_install/ocp_assisted_install",
               "id": "ocp_assisted_install/ocp_assisted_install",
-              "title": "OCP: Assisted Installation",
+              "title": "OCP Assisted Installation",
               "description": "In this optional lab we will go through Assited Installation feature that Red Hat Console offers.",
               "source": "@site/docs/ocp_assisted_install/ocp_assisted_install.mdx",
               "sourceDirName": "ocp_assisted_install",
@@ -57,23 +57,23 @@
               "tags": [],
               "version": "current",
               "frontMatter": {
-                "title": "OCP: Assisted Installation",
+                "title": "OCP Assisted Installation",
                 "sidebar_postion": 1
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Backup and Restore Applications",
-                "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
+                "title": "Day 0 and Day 1 Operations",
+                "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
               },
               "next": {
-                "title": "Architecture and Initial Setup",
-                "permalink": "/ocp_ntnx_hci/import_bp"
+                "title": "OCP: Create Additional OCP Clusters",
+                "permalink": "/optional_labs/ocp_vms_2"
               }
             },
             {
               "unversionedId": "ocp_ipi_install/ocp_ipi_install",
               "id": "ocp_ipi_install/ocp_ipi_install",
-              "title": "OCP: IPI Installation",
+              "title": "OCP IPI Installation",
               "description": "OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives customer a intutive and easy way to deploy OCP cluster on Nutanix AOS.",
               "source": "@site/docs/ocp_ipi_install/ocp_ipi_install.mdx",
               "sourceDirName": "ocp_ipi_install",
@@ -84,7 +84,7 @@
               "tags": [],
               "version": "current",
               "frontMatter": {
-                "title": "OCP: IPI Installation"
+                "title": "OCP IPI Installation"
               },
               "sidebar": "tutorialSidebar",
               "previous": {
@@ -100,7 +100,7 @@
               "unversionedId": "ocp_ndb/ocp_ndb",
               "id": "ocp_ndb/ocp_ndb",
               "title": "OCP and Nutanix NDB",
-              "description": "In this lab we will setup custom application with Nutanix Database NDB service.",
+              "description": "In this lab we will setup custom micro-service based application with VM based Nutanix Database NDB service.",
               "source": "@site/docs/ocp_ndb/ocp_ndb.md",
               "sourceDirName": "ocp_ndb",
               "slug": "/ocp_ndb/",
@@ -142,8 +142,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP: Assisted Installation",
-                "permalink": "/ocp_assisted_install/"
+                "title": "Backup and Restore Applications",
+                "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
               },
               "next": {
                 "title": "Deploy Provisioning VM",
@@ -170,7 +170,7 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "OCP: IPI Installation",
+                "title": "OCP IPI Installation",
                 "permalink": "/ocp_ipi_install/"
               },
               "next": {
@@ -202,8 +202,8 @@
                 "permalink": "/ocp_ntnx_hci/ocp_vms"
               },
               "next": {
-                "title": "OCP: Create Additional OCP Clusters",
-                "permalink": "/optional_labs/ocp_vms_2"
+                "title": "OCP Assisted Installation",
+                "permalink": "/ocp_assisted_install/"
               }
             },
             {
@@ -358,8 +358,8 @@
               },
               "sidebar": "tutorialSidebar",
               "previous": {
-                "title": "Day 0 and Day 1 Operations",
-                "permalink": "/ocp_ntnx_hci/ocp_scale_out_in"
+                "title": "OCP Assisted Installation",
+                "permalink": "/ocp_assisted_install/"
               },
               "next": {
                 "title": "OCP: Deploying IDP for OCP",
@@ -470,8 +470,8 @@
                 "permalink": "/workloads_on_ocp/ocp_wordpress_deploy"
               },
               "next": {
-                "title": "OCP: Assisted Installation",
-                "permalink": "/ocp_assisted_install/"
+                "title": "Architecture and Initial Setup",
+                "permalink": "/ocp_ntnx_hci/import_bp"
               }
             },
             {
@@ -560,18 +560,6 @@
               },
               {
                 "type": "category",
-                "label": "OCP with Assisted Installer",
-                "items": [
-                  {
-                    "type": "doc",
-                    "id": "ocp_assisted_install/ocp_assisted_install"
-                  }
-                ],
-                "collapsed": true,
-                "collapsible": true
-              },
-              {
-                "type": "category",
                 "label": "OCP with Nutanix Cloud Manager (NCM)",
                 "items": [
                   {
@@ -593,6 +581,10 @@
                 ],
                 "collapsed": true,
                 "collapsible": true
+              },
+              {
+                "type": "doc",
+                "id": "ocp_assisted_install/ocp_assisted_install"
               },
               {
                 "type": "category",

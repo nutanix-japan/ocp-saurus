@@ -1,7 +1,7 @@
 {
   "unversionedId": "ocp_ipi_install/ocp_ipi_install",
   "id": "ocp_ipi_install/ocp_ipi_install",
-  "title": "OCP: IPI Installation",
+  "title": "OCP IPI Installation",
   "description": "OCP Installer Provisioned Installation (IPI) has been released in August 2022. It gives customer a intutive and easy way to deploy OCP cluster on Nutanix AOS.",
   "source": "@site/docs/ocp_ipi_install/ocp_ipi_install.mdx",
   "sourceDirName": "ocp_ipi_install",
@@ -12,7 +12,7 @@
   "tags": [],
   "version": "current",
   "frontMatter": {
-    "title": "OCP: IPI Installation"
+    "title": "OCP IPI Installation"
   },
   "sidebar": "tutorialSidebar",
   "previous": {

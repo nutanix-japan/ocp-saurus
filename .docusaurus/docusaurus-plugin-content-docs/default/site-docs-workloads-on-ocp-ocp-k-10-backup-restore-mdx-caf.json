@@ -22,7 +22,7 @@
     "permalink": "/workloads_on_ocp/ocp_wordpress_deploy"
   },
   "next": {
-    "title": "OCP: Assisted Installation",
-    "permalink": "/ocp_assisted_install/"
+    "title": "Architecture and Initial Setup",
+    "permalink": "/ocp_ntnx_hci/import_bp"
   }
 }

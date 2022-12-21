@@ -6,19 +6,19 @@ import TabItem from '@theme/TabItem';
 
 # OCP and Nutanix NDB
 
-In this lab we will setup custom application with Nutanix Database [NDB](https://www.nutanix.com/products/database-service) service. 
+In this lab we will setup custom micro-service based application with VM based Nutanix Database [NDB](https://www.nutanix.com/products/database-service) service. 
 
 In recent years, the growth of microservices has lead to use of VM based databases. Although microservices based databases are available,
-customers are still using VM based databases as a datastore. The following may be the reason (but not limited to):
+customers are still using VM based databases as a datastore. The following may be the reason for customers using VM based databases (not limited to):
 
 - Customer has majority of databases on VM platform 
 - Customers DBA team has more expertise with VM based databases
 - Cloud based database providers (AWS RDS) with several database engines are used prevalently
 - Ease of deployment, scale and security (although security for microservices is improving at an exponential rate)
 - Customer's extensive knowledge in providing high availability, disaster recovery and backups for these VM based databases
-- Security of VMs in general 
+- Knowledge of implementing security practices for VMs in general 
 - Customers are using VM based databases and are in the middle of migrating to microservices based databases
-- Customers are using a hybrid database environment - both VM based and microservices based databases 
+- Customers are using a hybrid database environment - both VM based and microservices based databases and have decided to stay this way
 
 Nutanix NDB offers Databases as a service using NDB. Customers can provision hybrid multicloud DBaaS for Microsoft SQL Server, Oracle, PostgreSQL, MongoDB, and MySQL and be able to efficiently manage hundreds to thousands of databases.
 
@@ -34,10 +34,9 @@ Estimated time to complete this lab is **60 minutes**.
    <summary>Fun fact</summary>
    <div>
    <body>
-   NDB Operator was presented as a project in Nutanix Hackathon in 2022 by the Japan Solution Engineers (SE) team. The SEs identified a need in the 
-   in the field for their customers and developed a version of the NDB Operator for OpenShift. 
+   NDB Operator was presented as a project in Nutanix Hackathon in 2022 by the Japan Solution Engineers (SE) team. The SEs identified a need in the  in the field for their customers and developed a version of the NDB Operator for OpenShift. 
    
-   The team won in the Hackathon tournament and it is now an available solution for customers to take advantage of. This is testament of how Nutanix always have value to customers in mind. 
+   The team went to win the Hackathon tournament and NDB Operator is now an available solution for customers to take advantage of. This is testament of how Nutanix always have value to customers in mind. 
    </body>
    </div>
    </details>

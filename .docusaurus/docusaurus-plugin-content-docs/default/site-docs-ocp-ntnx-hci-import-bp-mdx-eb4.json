@@ -18,8 +18,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "OCP: Assisted Installation",
-    "permalink": "/ocp_assisted_install/"
+    "title": "Backup and Restore Applications",
+    "permalink": "/workloads_on_ocp/ocp_k10_backup_restore"
   },
   "next": {
     "title": "Deploy Provisioning VM",

@@ -20,35 +20,39 @@ issues of scale and lack of continuous innovation seen in SAN storage.
 Nutanix believes there is no room for silos in the Enterprise Cloud. By
 approaching Infrastructure and storage as an app, running in software on
 top of a proven HCI core, Nutanix delivers high performance,
-scalability, and rapid innovation through One Click management.
+scalability, and rapid innovation through One-Click management.
 
 :::info
 
-Estimated time to complete the labs depending on your familiarity level
-with Nutanix, Kubernets and Openshift concepts is as follows:
+-   **OCP: IPI Installation** - 60 minutes
+-   **Nutanix Storage CSI** - 30 minutes
+-   **OCP and Nutanix NDB** - 60 minutes
+-   **OCP Workload Backup/Restore** - 60 minutes 
+-   **OCP: NCM Installation** - 90 minutes
+-   **OCP: Assited Installer** - 40 minutes
+-   **Optional Labs** - 30 minutes
 
--   **OCP on Nutanix HCI** - 90 minutes to 120 minutes
--   **Workloads on OCP** - 90 minutes to 120 minutes
--   **Optional Labs** - 30 minutes to 45 minutes
-
+All lab durations are estimates. Actual duration will depend on your familiarity with OCP, Linux and kubernetes concepts in general.
 :::
 
 ## What's New
 
--   Workshop uses for the following software versions:
-    -   AOS 5.20.2.1
-    -   Prism Central pc.2021.9.0.2
-    -   Calm 3.3.1
+-   This workshop uses for the following software versions:
+    -   AOS 6.1.1.5
+    -   Prism Central - pc.2022.4.0.1
+    -   Calm 3.4.1
 
 ## Agenda
 
--   OCP on Nutanix HCI
-    -   Setting up Nutanix Calm and importing OCP Blueprints
-    -   Deploying Provisioning VM
+-   OCP IPI installation
+-   Nutanix Storage CSI  
+-   OCP and Nutanix NDB
+-   OCP on Nutanix NCM
     -   OCP: Deploying OCP Cluster
     -   OCP: Scale out and Scale in OCP Cluster Worker Nodes
     -   OCP: Deploying Nutanix CSI Drivers for OCP Cluster
     -   OCP: Deploy using Red Hat Assited Installer
+-   OCP and IPI installaation
 -   Workloads on OCP
     -   Deploying Wordpress application on OCP
     -   Setting up Nutanix Objects as for backup target
@@ -57,23 +61,18 @@ with Nutanix, Kubernets and Openshift concepts is as follows:
 -   Optional Labs
     -   OCP: Deploy second OCP cluster using Calm
     -   OCP: Provisioning storage to OCP Image Registry
-
 ## Initial Setup
 
--   Take note of the *Passwords* being used from you RX reservation
-    details
+-   Take note of the *Passwords* being used from you RX reservation details
 -   Log into your virtual desktops (connection info below)
 -   Login to Global Protect VPN if you have access
-
 ## Cluster Assignment
 
-The instructor will inform the attendees their assigned clusters.
+The instructor will inform the attendees of their assigned clusters.
 
 :::note
 
-If these are Single Node Clusters (SNCs) pay close attention on the
-networking part. The SNCs are setup and configured differently
-to the 3 or 4 node clusters
+If these are Single Node Clusters (SNCs) pay close attention on the networking part. The SNCs are setup and configured differently to the 3 or 4 node clusters
 
 :::
 
@@ -241,9 +240,3 @@ For RTP:
 -   **Type** - Policy Secure (UAC) or Connection Server
 -   **Name** - X-Labs - RTP
 -   **Server URL** - xlv-useast1.nutanix.com
-
-## Nutanix Version Info
-
--   AOS 5.20.2.1
--   Prism Central pc.2021.9.0.2
--   Calm 3.3.1
